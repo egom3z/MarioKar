@@ -39,8 +39,8 @@ LogFolderPath=..\Panel Templates\Project Logs
 ManagedProjectGUID=
 Template=dxp://VaultExplorer:Navigate_URL?VaultGUID=7D26C808-389D-48C9-9A90-FBA028EE95B2&ItemGUID=099781A4-FDCE-4F07-BA5C-5E0AEBD89978&RevisionGUID=B1B03EBF-7333-4F85-B169-2E50070804DC&"MainFilename=PCB_Project1.PrjPCB"
 IncludeDesignInRelease=0
-CrossRefSheetStyle=0
-CrossRefLocationStyle=0
+CrossRefSheetStyle=1
+CrossRefLocationStyle=1
 CrossRefPorts=0
 CrossRefCrossSheets=1
 CrossRefSheetEntries=0
@@ -85,6 +85,23 @@ GenerateClassCluster=0
 DocumentUniqueId=JRYQTDJR
 
 [Document3]
+DocumentPath=..\Libraries\ICM_42670\ICM-42670-P\ICM-42670-P.SchLib
+AnnotationEnabled=1
+AnnotateStartValue=1
+AnnotationIndexControlEnabled=0
+AnnotateSuffix=
+AnnotateScope=All
+AnnotateOrder=-1
+DoLibraryUpdate=1
+DoDatabaseUpdate=1
+ClassGenCCAutoEnabled=1
+ClassGenCCAutoRoomEnabled=0
+ClassGenNCAutoScope=None
+DItemRevisionGUID=
+GenerateClassCluster=0
+DocumentUniqueId=XTCMCLLM
+
+[Document4]
 DocumentPath=..\Libraries\CX2016\CX2016DB32000D0WZRC1.PcbLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -101,7 +118,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=BOEXRJPZ
 
-[Document4]
+[Document5]
 DocumentPath=..\Libraries\TPSM843321\TPSM843321RCJR\MODULE_TPSM843321RCJR.PcbLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -118,7 +135,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=DHNGQJHU
 
-[Document5]
+[Document6]
 DocumentPath=..\Libraries\LM3940\LM3940ISX-3P3NOPB.PcbLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -135,7 +152,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=WSVIDHCR
 
-[Document6]
+[Document7]
 DocumentPath=..\Libraries\MLPF-WB55\MLPF-WB55-01E3.PcbLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -152,7 +169,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=SYTRTGWD
 
-[Document7]
+[Document8]
 DocumentPath=..\Libraries\W3078\W3078.PcbLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -169,7 +186,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=BGMBZQFI
 
-[Document8]
+[Document9]
 DocumentPath=..\Libraries\MLPF-WB55\MLPF-WB55-01E3.SchLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -186,7 +203,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=EHMDCVHO
 
-[Document9]
+[Document10]
 DocumentPath=..\Libraries\TPSM843321\TPSM843321RCJR\TPSM843321RCJR.SchLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -203,7 +220,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=SKPCHKPF
 
-[Document10]
+[Document11]
 DocumentPath=..\Libraries\691210910002\691210910002\691210910002.PcbLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -220,7 +237,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=UIPSNXOG
 
-[Document11]
+[Document12]
 DocumentPath=..\Libraries\CX2016\CX2016DB32000D0WZRC1.SchLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -237,7 +254,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=BHOXGNGL
 
-[Document12]
+[Document13]
 DocumentPath=..\Libraries\STM32WB55\STM32WB55RGV6TR.PcbLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -254,7 +271,24 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=DFYMMFOS
 
-[Document13]
+[Document14]
+DocumentPath=..\Libraries\ICM_42670\ICM-42670-P\XDCR_ICM-42670-P.PcbLib
+AnnotationEnabled=1
+AnnotateStartValue=1
+AnnotationIndexControlEnabled=0
+AnnotateSuffix=
+AnnotateScope=All
+AnnotateOrder=-1
+DoLibraryUpdate=1
+DoDatabaseUpdate=1
+ClassGenCCAutoEnabled=1
+ClassGenCCAutoRoomEnabled=0
+ClassGenNCAutoScope=None
+DItemRevisionGUID=
+GenerateClassCluster=0
+DocumentUniqueId=NIUPOQUW
+
+[Document15]
 DocumentPath=..\Libraries\STM32WB55\STM32WB55RGV6TR.SchLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -271,7 +305,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=VTPRLXKW
 
-[Document14]
+[Document16]
 DocumentPath=..\Libraries\LM3940\LM3940ISX-3P3NOPB.SchLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -288,7 +322,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=KLPBDURQ
 
-[Document15]
+[Document17]
 DocumentPath=..\Libraries\TS02\TS02-66-70-BK-260-LCR-D\SW_TS02-66-70-BK-260-LCR-D.PcbLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -305,7 +339,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=KNQDDVKC
 
-[Document16]
+[Document18]
 DocumentPath=..\Libraries\SN74\SN74LV1T34DBVR\SOT95P280X145-5N.PcbLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -322,7 +356,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=LWLJWPNX
 
-[Document17]
+[Document19]
 DocumentPath=..\Libraries\SN74\SN74LV1T34DBVR\SN74LV1T34DBVR.SchLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -339,7 +373,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=BJPUZGLB
 
-[Document18]
+[Document20]
 DocumentPath=..\Libraries\DRV8242\DRV8242SQRHLRQ1.SchLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -356,7 +390,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=KALNGVNG
 
-[Document19]
+[Document21]
 DocumentPath=..\Libraries\W3078\W3078.SchLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -373,7 +407,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=ALRYAHSY
 
-[Document20]
+[Document22]
 DocumentPath=..\Libraries\DRV8242\DRV8242SQRHLRQ1.PcbLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -390,7 +424,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=IQFXQIYA
 
-[Document21]
+[Document23]
 DocumentPath=Kar_PCB.SchDoc
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -407,7 +441,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=CJHNTGTK
 
-[Document22]
+[Document24]
 DocumentPath=Assembly.OutJob
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -424,7 +458,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=
 
-[Document23]
+[Document25]
 DocumentPath=Documentation.OutJob
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -441,7 +475,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=
 
-[Document24]
+[Document26]
 DocumentPath=Fabrication.OutJob
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -458,7 +492,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=
 
-[Document25]
+[Document27]
 DocumentPath=PCB1.PcbDoc
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -475,7 +509,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=RJHOKYIJ
 
-[Document26]
+[Document28]
 DocumentPath=ActiveBOM.BomDoc
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -492,7 +526,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=
 
-[Document27]
+[Document29]
 DocumentPath=Power.SchDoc
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -509,7 +543,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=CRLFJMKQ
 
-[Document28]
+[Document30]
 DocumentPath=Motor.SchDoc
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -526,7 +560,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=YTUYXYTC
 
-[Document29]
+[Document31]
 DocumentPath=STM32.SchDoc
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -543,85 +577,102 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=FZLPWOPU
 
+[Document32]
+DocumentPath=Kar_IMU.SchDoc
+AnnotationEnabled=1
+AnnotateStartValue=1
+AnnotationIndexControlEnabled=0
+AnnotateSuffix=
+AnnotateScope=All
+AnnotateOrder=-1
+DoLibraryUpdate=1
+DoDatabaseUpdate=1
+ClassGenCCAutoEnabled=1
+ClassGenCCAutoRoomEnabled=0
+ClassGenNCAutoScope=None
+DItemRevisionGUID=
+GenerateClassCluster=0
+DocumentUniqueId=AUDBHSOR
+
 [Parameter1]
-Name=SCH_REV
-Value=A
+Name=CAGE_CODE
+Value=?????
 
 [Parameter2]
-Name=PCB_REV
-Value=A
-
-[Parameter3]
-Name=PCB_PART_NUMBER
-Value=<PCB PN>
-
-[Parameter4]
-Name=PCB_ENGINEER_APP_DATE
-Value=--/--/----
-
-[Parameter5]
-Name=PCB_ENGINEER
-Value=- -----
-
-[Parameter6]
-Name=PCB_DWG_NO
-Value=<PCB DWG NO>
-
-[Parameter7]
-Name=PCB_DESIGNER_APP_DATE
-Value=--/--/----
-
-[Parameter8]
-Name=PCB_DESIGNER
-Value=- -----
-
-[Parameter9]
-Name=PCB_CHECKER_APP_DATE
-Value=--/--/----
-
-[Parameter10]
-Name=PCB_CHECKER
-Value=- -----
-
-[Parameter11]
-Name=PCB_ASSEMBLY_NO
-Value=<PCB ASSY NO>
-
-[Parameter12]
-Name=PCB_ANG_TOL
-Value=+/-1/2
-
-[Parameter13]
-Name=PCB_3_DEC_TOL
-Value=+/-.010
-
-[Parameter14]
-Name=PCB_2_DEC_TOL
-Value=+/-.01
-
-[Parameter15]
-Name=DOC_NO_SCH_DWG
-Value=<SCH DWG NO>
-
-[Parameter16]
-Name=DOC_NO_FAB_DWG
-Value=<FAB DWG NO>
-
-[Parameter17]
-Name=DOC_NO_BOM
-Value=<BOM DOC NO>
-
-[Parameter18]
-Name=DOC_NO_ASSY_DWG
-Value=<ASSY DWG NO>
-
-[Parameter19]
 Name=CONTRACT_NUMBER
 Value=<CONTRACT NO>
 
+[Parameter3]
+Name=DOC_NO_ASSY_DWG
+Value=<ASSY DWG NO>
+
+[Parameter4]
+Name=DOC_NO_BOM
+Value=<BOM DOC NO>
+
+[Parameter5]
+Name=DOC_NO_FAB_DWG
+Value=<FAB DWG NO>
+
+[Parameter6]
+Name=DOC_NO_SCH_DWG
+Value=<SCH DWG NO>
+
+[Parameter7]
+Name=PCB_2_DEC_TOL
+Value=+/-.01
+
+[Parameter8]
+Name=PCB_3_DEC_TOL
+Value=+/-.010
+
+[Parameter9]
+Name=PCB_ANG_TOL
+Value=+/-1/2
+
+[Parameter10]
+Name=PCB_ASSEMBLY_NO
+Value=<PCB ASSY NO>
+
+[Parameter11]
+Name=PCB_CHECKER
+Value=- -----
+
+[Parameter12]
+Name=PCB_CHECKER_APP_DATE
+Value=--/--/----
+
+[Parameter13]
+Name=PCB_DESIGNER
+Value=- -----
+
+[Parameter14]
+Name=PCB_DESIGNER_APP_DATE
+Value=--/--/----
+
+[Parameter15]
+Name=PCB_DWG_NO
+Value=<PCB DWG NO>
+
+[Parameter16]
+Name=PCB_ENGINEER
+Value=- -----
+
+[Parameter17]
+Name=PCB_ENGINEER_APP_DATE
+Value=--/--/----
+
+[Parameter18]
+Name=PCB_PART_NUMBER
+Value=<PCB PN>
+
+[Parameter19]
+Name=PCB_REV
+Value=A
+
 [Parameter20]
-Name=CAGE_CODE
-Value=?????
+Name=SCH_REV
+Value=A
 
 [Configuration1]
 Name=Default Configuration
@@ -1331,6 +1382,14 @@ Type148=1
 Type149=1
 Type150=1
 Type151=1
+Type152=1
+Type153=1
+Type154=1
+Type155=1
+Type156=1
+Type157=1
+Type158=1
+Type159=1
 
 [Difference Levels]
 Type1=1
@@ -1415,6 +1474,11 @@ Type79=1
 Type80=1
 Type81=1
 Type82=1
+Type83=1
+Type84=1
+Type85=1
+Type86=1
+Type87=1
 
 [Electrical Rules Check]
 Type1=1
@@ -1578,6 +1642,8 @@ Type158=0
 Type159=0
 Type160=0
 Type161=0
+Type162=1
+Type163=1
 
 [ERC Connection Matrix]
 L1=NNNNNNNNNNNWNNNWW
