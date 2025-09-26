@@ -1,0 +1,96 @@
+# Created by Ultra Librarian 8.3.372 Copyright © 1999-2024
+# Frank Frank, Accelerated Designs
+
+StartFootprints
+
+Footprint (Name "CONN_SM06B-GHS-TB_JST")
+Pad (Name "1") (Location -123.0315, 73.84645844) (Surface True) (Rotation 0) (ExpandMask 0) (ExpandPaste 0)
+PadShape (Size 24, 67) (Shape Rectangular) (Layer Top)
+EndPad
+Pad (Name "2") (Location -73.8189, 73.84645844) (Surface True) (Rotation 0) (ExpandMask 0) (ExpandPaste 0)
+PadShape (Size 24, 67) (Shape Rectangular) (Layer Top)
+EndPad
+Pad (Name "3") (Location -24.6063, 73.84645844) (Surface True) (Rotation 0) (ExpandMask 0) (ExpandPaste 0)
+PadShape (Size 24, 67) (Shape Rectangular) (Layer Top)
+EndPad
+Pad (Name "4") (Location 24.6063, 73.84645844) (Surface True) (Rotation 0) (ExpandMask 0) (ExpandPaste 0)
+PadShape (Size 24, 67) (Shape Rectangular) (Layer Top)
+EndPad
+Pad (Name "5") (Location 73.8189, 73.84645844) (Surface True) (Rotation 0) (ExpandMask 0) (ExpandPaste 0)
+PadShape (Size 24, 67) (Shape Rectangular) (Layer Top)
+EndPad
+Pad (Name "6") (Location 123.0315, 73.84645844) (Surface True) (Rotation 0) (ExpandMask 0) (ExpandPaste 0)
+PadShape (Size 24, 67) (Shape Rectangular) (Layer Top)
+EndPad
+Pad (Name "7") (Location -195.8661, -52.13784156) (Surface True) (Rotation 0) (ExpandMask -56) (ExpandPaste -56)
+PadShape (Size 39, 112) (Shape Rectangular) (Layer Top)
+EndPad
+Pad (Name "8") (Location 195.8661, -52.13784156) (Surface True) (Rotation 0) (ExpandMask -56) (ExpandPaste -56)
+PadShape (Size 39, 112) (Shape Rectangular) (Layer Top)
+EndPad
+Line (Width 6) (Start -225.36610413, 117.34645844) (End -225.36610413, -118.13784027) (Layer Mechanical15) 
+Line (Width 6) (Start -225.36610413, -118.13784027) (End 225.36610413, -118.13784027) (Layer Mechanical15) 
+Line (Width 6) (Start 225.36610413, -118.13784027) (End 225.36610413, 117.34645844) (Layer Mechanical15) 
+Line (Width 6) (Start 225.36610413, 117.34645844) (End -225.36610413, 117.34645844) (Layer Mechanical15) 
+Polygon (PointCount 4) (Layer Mechanical15) 
+Point (-225.36610413, 117.34645844)
+Point (-225.36610413, -118.13784027)
+Point (225.36610413, -118.13784027)
+Point (225.36610413, 117.34645844)
+EndPolygon
+Line (Width 6) (Start -163.26609962, -100.50003815) (End 163.26609962, -100.50003815) (Layer TopOverlay) 
+Line (Width 6) (Start 216.5, 16.91299292) (End 216.5, 100.49999809) (Layer TopOverlay) 
+Line (Width 6) (Start 216.5, 100.49999809) (End 148.13150038, 100.49999809) (Layer TopOverlay) 
+Line (Width 6) (Start -216.5, 100.49999809) (End -216.5, 16.91299292) (Layer TopOverlay) 
+Line (Width 6) (Start -148.13150038, 100.49999809) (End -216.5, 100.49999809) (Layer TopOverlay) 
+Arc (Width 20) (Radius 15) (Location -286.5, 73.84645844) (StartAngle 0) (EndAngle 360) (Layer TopOverlay) 
+Text (Location -75, 48.84645844) (Height 50) (Width 3) (Rotation 0) (Layer TopOverlay) (Value "RefDes")
+Line (Width 1) (Start -211.5, -95.50003815) (End 211.5, -95.50003815) (Layer Mechanical13) 
+Line (Width 1) (Start 211.5, -95.50003815) (End 211.5, 95.49999809) (Layer Mechanical13) 
+Line (Width 1) (Start 211.5, 95.49999809) (End -211.5, 95.49999809) (Layer Mechanical13) 
+Line (Width 1) (Start -211.5, 95.49999809) (End -211.5, -95.50003815) (Layer Mechanical13) 
+Arc (Width 20) (Radius 15) (Location -123.03150177, 148.84645844) (StartAngle 0) (EndAngle 360) (Layer Mechanical13) 
+Text (Location -87.5, 48.84645844) (Height 50) (Width 3) (Rotation 0) (Layer Mechanical13) (Value "RefDes2")
+Text (Location -87.5, 48.84645844) (Height 50) (Width 3) (Rotation 0) (Layer TopOverlay) (Value "REFDES")
+Arc (Width 20) (Radius 15) (Location -286.5, 73.84645844) (StartAngle 0) (EndAngle 360) (Layer BottomOverlay) 
+EndFootprint
+EndFootprints
+
+StartComponents
+
+Component (Name "SM06B-GHS-TB") (PartCount 1) (DesPrefix "J?")
+Pin (Location 200, 0) (Rotation 180) (PinType Passive) (Length 200) (Width 0) (Designator Visible "1") (Name Hidden "1") (PinSwap 0) (PartSwap 0) (PinSeq 1) (Part 1)
+Pin (Location 200, -100) (Rotation 180) (PinType Passive) (Length 200) (Width 0) (Designator Visible "2") (Name Hidden "2") (PinSwap 0) (PartSwap 0) (PinSeq 2) (Part 1)
+Pin (Location 200, -200) (Rotation 180) (PinType Passive) (Length 200) (Width 0) (Designator Visible "3") (Name Hidden "3") (PinSwap 0) (PartSwap 0) (PinSeq 3) (Part 1)
+Pin (Location 200, -300) (Rotation 180) (PinType Passive) (Length 200) (Width 0) (Designator Visible "4") (Name Hidden "4") (PinSwap 0) (PartSwap 0) (PinSeq 4) (Part 1)
+Pin (Location 200, -400) (Rotation 180) (PinType Passive) (Length 200) (Width 0) (Designator Visible "5") (Name Hidden "5") (PinSwap 0) (PartSwap 0) (PinSeq 5) (Part 1)
+Pin (Location 200, -500) (Rotation 180) (PinType Passive) (Length 200) (Width 0) (Designator Visible "6") (Name Hidden "6") (PinSwap 0) (PartSwap 0) (PinSeq 6) (Part 1)
+Line (Width 5) (Start 400, 0) (End 200, 0) (Part 1)
+Line (Width 5) (Start 400, -100) (End 200, -100) (Part 1)
+Line (Width 5) (Start 400, -200) (End 200, -200) (Part 1)
+Line (Width 5) (Start 400, -300) (End 200, -300) (Part 1)
+Line (Width 5) (Start 400, -400) (End 200, -400) (Part 1)
+Line (Width 5) (Start 400, -500) (End 200, -500) (Part 1)
+Line (Width 5) (Start 400, 0) (End 350, 33.3333) (Part 1)
+Line (Width 5) (Start 400, -100) (End 350, -66.6667) (Part 1)
+Line (Width 5) (Start 400, -200) (End 350, -166.6667) (Part 1)
+Line (Width 5) (Start 400, -300) (End 350, -266.6667) (Part 1)
+Line (Width 5) (Start 400, -400) (End 350, -366.6667) (Part 1)
+Line (Width 5) (Start 400, -500) (End 350, -466.6667) (Part 1)
+Line (Width 5) (Start 400, 0) (End 350, -33.3333) (Part 1)
+Line (Width 5) (Start 400, -100) (End 350, -133.3333) (Part 1)
+Line (Width 5) (Start 400, -200) (End 350, -233.3333) (Part 1)
+Line (Width 5) (Start 400, -300) (End 350, -333.3333) (Part 1)
+Line (Width 5) (Start 400, -400) (End 350, -433.3333) (Part 1)
+Line (Width 5) (Start 400, -500) (End 350, -533.3333) (Part 1)
+Rectangle (Width 5) (Start 200, -600) (End 500, 100) (Part 1)
+Parameter (Name "Copyright") (Location 0, 0) (Height 50) (Rotation 0) (Justification Center) (Value "Copyright (C) 2025 Ultra Librarian. All rights reserved.") (Part 1)
+Parameter (Name "Manufacturer_Name") (Location 0, 0) (Height 50) (Rotation 0) (Justification Center) (Value "JST") (Part 1)
+Parameter (Name "Manufacturer_Part_Number") (Location 0, 0) (Height 50) (Rotation 0) (Justification Center) (Value "SM06B-GHS-TB") (Part 1)
+Parameter (Name "RefDes") (Location 350, 250) (Height 82) (Rotation 0) (Justification Center) (Value "RefDes") (Part 1)
+Parameter (Name "Type") (Location 400, -200) (Height 82) (Rotation 0) (Justification Center) (Value "Type") (Part 1)
+Description (Value "No Description Available") (Part 1)
+Comment (Value "SM06B-GHS-TB") (Part 1)
+Footprint (Name "CONN_SM06B-GHS-TB_JST")
+EndComponent
+EndComponents
