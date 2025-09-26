@@ -51,6 +51,23 @@ PrefsVaultGUID=
 PrefsRevisionGUID=
 
 [Document1]
+DocumentPath=..\Libraries\Imported MOUDLE23P--df521d15-7b28-417b-a2d0-022551febd84\ESP32.PcbLib
+AnnotationEnabled=1
+AnnotateStartValue=1
+AnnotationIndexControlEnabled=0
+AnnotateSuffix=
+AnnotateScope=All
+AnnotateOrder=-1
+DoLibraryUpdate=1
+DoDatabaseUpdate=1
+ClassGenCCAutoEnabled=1
+ClassGenCCAutoRoomEnabled=0
+ClassGenNCAutoScope=None
+DItemRevisionGUID=
+GenerateClassCluster=0
+DocumentUniqueId=RXAVVJKC
+
+[Document2]
 DocumentPath=..\Libraries\TS02\TS02-66-70-BK-260-LCR-D\TS02-66-70-BK-260-LCR-D.SchLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -67,7 +84,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=SOBGQAZH
 
-[Document2]
+[Document3]
 DocumentPath=..\Libraries\691210910002\691210910002\691210910002.SchLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -84,7 +101,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=JRYQTDJR
 
-[Document3]
+[Document4]
 DocumentPath=..\Libraries\ICM_42670\ICM-42670-P\ICM-42670-P.SchLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -101,7 +118,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=XTCMCLLM
 
-[Document4]
+[Document5]
 DocumentPath=..\Libraries\CX2016\CX2016DB32000D0WZRC1.PcbLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -118,7 +135,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=BOEXRJPZ
 
-[Document5]
+[Document6]
 DocumentPath=..\Libraries\TPSM843321\TPSM843321RCJR\MODULE_TPSM843321RCJR.PcbLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -135,7 +152,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=DHNGQJHU
 
-[Document6]
+[Document7]
 DocumentPath=..\Libraries\LM3940\LM3940ISX-3P3NOPB.PcbLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -152,7 +169,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=WSVIDHCR
 
-[Document7]
+[Document8]
 DocumentPath=..\Libraries\MLPF-WB55\MLPF-WB55-01E3.PcbLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -169,7 +186,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=SYTRTGWD
 
-[Document8]
+[Document9]
 DocumentPath=..\Libraries\W3078\W3078.PcbLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -186,7 +203,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=BGMBZQFI
 
-[Document9]
+[Document10]
 DocumentPath=..\Libraries\MLPF-WB55\MLPF-WB55-01E3.SchLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -203,7 +220,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=EHMDCVHO
 
-[Document10]
+[Document11]
 DocumentPath=..\Libraries\TPSM843321\TPSM843321RCJR\TPSM843321RCJR.SchLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -220,7 +237,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=SKPCHKPF
 
-[Document11]
+[Document12]
 DocumentPath=..\Libraries\691210910002\691210910002\691210910002.PcbLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -237,7 +254,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=UIPSNXOG
 
-[Document12]
+[Document13]
 DocumentPath=..\Libraries\CX2016\CX2016DB32000D0WZRC1.SchLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -254,7 +271,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=BHOXGNGL
 
-[Document13]
+[Document14]
 DocumentPath=..\Libraries\STM32WB55\STM32WB55RGV6TR.PcbLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -271,7 +288,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=DFYMMFOS
 
-[Document14]
+[Document15]
 DocumentPath=..\Libraries\ICM_42670\ICM-42670-P\XDCR_ICM-42670-P.PcbLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -288,7 +305,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=NIUPOQUW
 
-[Document15]
+[Document16]
 DocumentPath=..\Libraries\STM32WB55\STM32WB55RGV6TR.SchLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -305,7 +322,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=VTPRLXKW
 
-[Document16]
+[Document17]
 DocumentPath=..\Libraries\LM3940\LM3940ISX-3P3NOPB.SchLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -322,7 +339,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=KLPBDURQ
 
-[Document17]
+[Document18]
 DocumentPath=..\Libraries\TS02\TS02-66-70-BK-260-LCR-D\SW_TS02-66-70-BK-260-LCR-D.PcbLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -339,7 +356,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=KNQDDVKC
 
-[Document18]
+[Document19]
 DocumentPath=..\Libraries\SN74\SN74LV1T34DBVR\SOT95P280X145-5N.PcbLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -356,7 +373,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=LWLJWPNX
 
-[Document19]
+[Document20]
 DocumentPath=..\Libraries\SN74\SN74LV1T34DBVR\SN74LV1T34DBVR.SchLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -373,7 +390,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=BJPUZGLB
 
-[Document20]
+[Document21]
 DocumentPath=..\Libraries\DRV8242\DRV8242SQRHLRQ1.SchLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -390,7 +407,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=KALNGVNG
 
-[Document21]
+[Document22]
 DocumentPath=..\Libraries\W3078\W3078.SchLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -407,7 +424,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=ALRYAHSY
 
-[Document22]
+[Document23]
 DocumentPath=..\Libraries\DRV8242\DRV8242SQRHLRQ1.PcbLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -424,7 +441,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=IQFXQIYA
 
-[Document23]
+[Document24]
 DocumentPath=Kar_PCB.SchDoc
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -441,7 +458,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=CJHNTGTK
 
-[Document24]
+[Document25]
 DocumentPath=Assembly.OutJob
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -458,7 +475,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=
 
-[Document25]
+[Document26]
 DocumentPath=Documentation.OutJob
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -475,7 +492,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=
 
-[Document26]
+[Document27]
 DocumentPath=Fabrication.OutJob
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -492,7 +509,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=
 
-[Document27]
+[Document28]
 DocumentPath=PCB1.PcbDoc
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -509,7 +526,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=RJHOKYIJ
 
-[Document28]
+[Document29]
 DocumentPath=ActiveBOM.BomDoc
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -526,7 +543,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=
 
-[Document29]
+[Document30]
 DocumentPath=Power.SchDoc
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -543,7 +560,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=CRLFJMKQ
 
-[Document30]
+[Document31]
 DocumentPath=Motor.SchDoc
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -560,7 +577,7 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=YTUYXYTC
 
-[Document31]
+[Document32]
 DocumentPath=STM32.SchDoc
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -577,8 +594,25 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=FZLPWOPU
 
-[Document32]
+[Document33]
 DocumentPath=Kar_IMU.SchDoc
+AnnotationEnabled=1
+AnnotateStartValue=1
+AnnotationIndexControlEnabled=0
+AnnotateSuffix=
+AnnotateScope=All
+AnnotateOrder=4
+DoLibraryUpdate=1
+DoDatabaseUpdate=1
+ClassGenCCAutoEnabled=1
+ClassGenCCAutoRoomEnabled=0
+ClassGenNCAutoScope=None
+DItemRevisionGUID=
+GenerateClassCluster=0
+DocumentUniqueId=AUDBHSOR
+
+[Document34]
+DocumentPath=ESP32.SchLib
 AnnotationEnabled=1
 AnnotateStartValue=1
 AnnotationIndexControlEnabled=0
@@ -592,7 +626,58 @@ ClassGenCCAutoRoomEnabled=0
 ClassGenNCAutoScope=None
 DItemRevisionGUID=
 GenerateClassCluster=0
-DocumentUniqueId=AUDBHSOR
+DocumentUniqueId=BGEZFEQK
+
+[Document35]
+DocumentPath=Glove_PCB.SchDoc
+AnnotationEnabled=1
+AnnotateStartValue=1
+AnnotationIndexControlEnabled=0
+AnnotateSuffix=
+AnnotateScope=All
+AnnotateOrder=5
+DoLibraryUpdate=1
+DoDatabaseUpdate=1
+ClassGenCCAutoEnabled=1
+ClassGenCCAutoRoomEnabled=0
+ClassGenNCAutoScope=None
+DItemRevisionGUID=
+GenerateClassCluster=0
+DocumentUniqueId=TWFVUSMD
+
+[Document36]
+DocumentPath=ADA_DRV2605L.PcbLib
+AnnotationEnabled=1
+AnnotateStartValue=1
+AnnotationIndexControlEnabled=0
+AnnotateSuffix=
+AnnotateScope=All
+AnnotateOrder=-1
+DoLibraryUpdate=1
+DoDatabaseUpdate=1
+ClassGenCCAutoEnabled=1
+ClassGenCCAutoRoomEnabled=0
+ClassGenNCAutoScope=None
+DItemRevisionGUID=
+GenerateClassCluster=0
+DocumentUniqueId=PGJCLGHW
+
+[Document37]
+DocumentPath=ADA_DRV2605L.SchLib
+AnnotationEnabled=1
+AnnotateStartValue=1
+AnnotationIndexControlEnabled=0
+AnnotateSuffix=
+AnnotateScope=All
+AnnotateOrder=-1
+DoLibraryUpdate=1
+DoDatabaseUpdate=1
+ClassGenCCAutoEnabled=1
+ClassGenCCAutoRoomEnabled=0
+ClassGenNCAutoScope=None
+DItemRevisionGUID=
+GenerateClassCluster=0
+DocumentUniqueId=LKSBWRJJ
 
 [Parameter1]
 Name=CAGE_CODE
