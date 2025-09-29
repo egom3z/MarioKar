@@ -866,6 +866,10 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=KONONJGL
 
+[GeneratedDocument1]
+DocumentPath=Project Outputs\Design Rule Check - Kar_PCB.html
+DItemRevisionGUID=
+
 [Parameter1]
 Name=CAGE_CODE
 Value=?????
