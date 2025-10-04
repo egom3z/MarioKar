@@ -1,10 +1,12 @@
-Output: Bill of Materials
-Type  : BOM
-From  : Variant [[No Variations]] of BOM Document [ActiveBOM.BomDoc]
-   Generated File[Bill of Materials-ActiveBOM.xlsx]
+Output: NC Drill Files
+Type  : NC Drill
+From  : PCB Document [Glove_PCB.PcbDoc]
+   Generated File[Glove_PCB.TXT]
+   Generated File[Glove_PCB.LDP]
+   Generated File[Glove_PCB.DRR]
 
 
-Files Generated   : 1
+Files Generated   : 3
 Documents Printed : 0
 
-Finished Output Generation At 8:10:15 PM On 10/3/2025
+Finished Output Generation At 11:34:21 PM On 10/3/2025

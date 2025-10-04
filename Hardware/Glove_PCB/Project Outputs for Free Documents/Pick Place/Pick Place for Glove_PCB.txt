@@ -1,0 +1,42 @@
+Altium Designer Pick and Place Locations
+C:\Users\Mr_Gustavo\Documents\MarioKar\Hardware\Glove_PCB\Project Outputs for Free Documents\Pick Place\Pick Place for Glove_PCB.txt
+
+========================================================================================================================
+File Design Information:
+
+Date:       03/10/25
+Time:       23:03
+Revision:   5ff64fc34cd410a1aaa6c4bfc2653d7476dabc9b
+Variant:    No variations
+Units used: mil
+
+Designator Comment             Layer       Footprint                                        Center-X(mil) Center-Y(mil) Rotation Description                                                                                
+R13        RT0603BRD0750RL     TopLayer    RES_RT0603_YAG                                   1575.000      2475.000      90       "No Description Available"                                                                 
+R12        RT0603BRD0750RL     TopLayer    RES_RT0603_YAG                                   1425.000      2475.000      90       "No Description Available"                                                                 
+R11        RT0603BRD0750RL     TopLayer    RES_RT0603_YAG                                   1275.000      2475.000      90       "No Description Available"                                                                 
+R10        RT0603BRD0750RL     TopLayer    RES_RT0603_YAG                                   1130.000      2475.000      90       "No Description Available"                                                                 
+D4         WL-SMCW_0603        TopLayer    WL-SMCW_0603                                     1515.000      2475.000      270      "0603, Yellow Typ.(@20mA): 590nm, 120mcd, 2.0V, 140° AlInGaP"                             
+D3         WL-SMCW_0603        TopLayer    WL-SMCW_0603                                     1365.000      2475.000      270      "0603, Super Red Typ.(@20mA): 630nm, 60mcd, 1.9V, 140° AlInGaP"                           
+D2         WL-SMCW_0603        TopLayer    WL-SMCW_0603                                     1215.000      2475.000      270      "0603, Super Red Typ.(@20mA): 630nm, 60mcd, 1.9V, 140° AlInGaP"                           
+D1         WL-SMCW_0603        TopLayer    WL-SMCW_0603                                     1070.000      2475.000      270      "0603, Yellow Typ.(@20mA): 590nm, 120mcd, 2.0V, 140° AlInGaP"                             
+SW1        SLW-913535-2A-SMT   TopLayer    SLW-913535_CUD                                   2520.000      2125.000      180      "No Description Available"                                                                 
+R9         RC0805JR-074K7L     BottomLayer RC0805N_YAG                                      2630.000      1875.000      270      "RES 0805 4.7k 5% 1/8W"                                                                    
+R8         RC0805JR-074K7L     BottomLayer RC0805N_YAG                                      2595.000      2335.000      270      "RES 0805 4.7k 5% 1/8W"                                                                    
+R4         RC0805JR-074K7L     TopLayer    RC0805N_YAG                                      2605.000      1650.000      270      "RES 0805 4.7k 5% 1/8W"                                                                    
+R2         RC0805JR-074K7L     TopLayer    RC0805N_YAG                                      2525.000      1760.000      270      "RES 0805 4.7k 5% 1/8W"                                                                    
+U3         LM3940ISX-3.3/NOPB  TopLayer    TS3B                                             1455.000      1325.000      90       "1-A, low-dropout voltage regulator for 5-V to 3.3-V conversion 3-DDPAK/TO-263 -40 to 125" 
+U2         ADA_DRV2605L        TopLayer    ADA_DRV2605L                                     1370.000      2005.000      90       ""                                                                                         
+U1         ESP32_XIAO          TopLayer    MOUDLE23P-SMD-2.54-21X17.8MM.kicad_mod.kicad_sym 2105.000      1525.000      270      ""                                                                                         
+R7         RC0805JR-07100RL    BottomLayer RC0805N_YAG                                      1890.000      1755.000      90       "RES 0805 100 5% 1/8W"                                                                     
+R6         RC0805JR-074K7L     TopLayer    RC0805N_YAG                                      2550.000      1315.000      270      "RES 0805 4.7k 5% 1/8W"                                                                    
+R5         RC0805JR-07100RL    BottomLayer RC0805N_YAG                                      1975.000      1560.000      90       "RES 0805 100 5% 1/8W"                                                                     
+R3         RC0805JR-074K7L     TopLayer    RC0805N_YAG                                      2550.000      1165.000      90       "RES 0805 4.7k 5% 1/8W"                                                                    
+R1         RC0805JR-07100RL    TopLayer    RC0805N_YAG                                      1935.000      2165.000      180      "RES 0805 100 5% 1/8W"                                                                     
+MT1        ICM-42670-P         TopLayer    XDCR_ICM-42670-P                                 2095.000      2135.000      0        ""                                                                                         
+J1         SM06B-GHS-TB        TopLayer    CONN_SM06B-GHS-TB_JST                            2240.000      2444.146      180      "No Description Available"                                                                 
+J2         691210910002        TopLayer    691210910002                                     1845.000      2430.000      180      ""                                                                                         
+C5         C2012X5R1A336M125AC TopLayer    CAPC2012X145N                                    1620.000      1595.000      180      "Multilayer Ceramic Chip Capacitors, Capacitance=33u"                                      
+C4         GCM21BR71H474KA55K  TopLayer    CAPC2012X145N                                    1660.000      1070.000      180      "Multilayer Ceramic Chip Capacitors, Capacitance=0.47u"                                    
+C3         C2012X7R1H225K125AE TopLayer    CAPC2012X145N                                    2240.000      2005.000      180      "Multilayer Ceramic Chip Capacitors, Capacitance=2.2u"                                     
+C2         KAM21BR71H104JM     TopLayer    CAPC2012X145N                                    2034.370      2030.000      0        "Multilayer Ceramic Chip Capacitors, Capacitance=0.1u"                                     
+C1         KAM21BR71H104JM     TopLayer    CAPC2012X145N                                    2239.370      2080.000      180      "Multilayer Ceramic Chip Capacitors, Capacitance=0.1u"                                     

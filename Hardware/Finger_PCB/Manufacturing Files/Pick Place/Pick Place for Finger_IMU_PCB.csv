@@ -1,0 +1,21 @@
+Altium Designer Pick and Place Locations,,,,,,,,,,
+C:\Users\Mr_Gustavo\Documents\MarioKar\Hardware\Finger_PCB\Project Outputs for Free Documents\Pick Place\Pick Place for Finger_IMU_PCB.csv,,,,,,,,,,
+,,,,,,,,,,
+========================================================================================================================,,,,,,,,,,
+File Design Information:,,,,,,,,,,
+,,,,,,,,,,
+Date:       04/10/25,,,,,,,,,,
+Time:       11:28,,,,,,,,,,
+Revision:   e9b2d7f0a63a7e422b28bb91fc3d3b65f8ac7290,,,,,,,,,,
+Variant:    No variations,,,,,,,,,,
+Units used: mil,,,,,,,,,,
+,,,,,,,,,,
+Designator,Footprint,Center-X(mil),Center-Y(mil),Ref-X(mil),Ref-Y(mil),Pad-X(mil),Pad-Y(mil),Layer,Rotation,Comment
+R2,RES_RT0603_YAG,1385,1405,1385,1405,1385,1375.5,TopLayer,90,RT0603BRD0750RL
+D1,WL-SMCW_0603,1455,1405,1455,1405,1455,1373.504,TopLayer,90,150060YS75000
+R1,RC0805N_YAG,1300,1245,1300,1245,1300,1278.5,TopLayer,270,RC0805JR-07100RL
+MT1,XDCR_ICM-42670-P,1419.685,1254.075,1419.685,1254.075,1373.917,1283.602,TopLayer,0,ICM-42670-P
+J1,CONN_SM06B-GHS-TB_JST,1145.854,1240,1135,1240,1208.847,1363.032,TopLayer,270,SM06B-GHS-TB
+C3,CAPC2012X145N,1460,1120.63,1460,1120.63,1460,1081.26,TopLayer,90,C2012X7R1H225K125AE
+C2,CAPC2012X145N,1385,1120.63,1385,1120.63,1385,1081.26,TopLayer,90,KAM21BR71H104JM
+C1,CAPC2012X145N,1310,1120,1310,1120,1310,1080.63,TopLayer,90,KAM21BR71H104JM

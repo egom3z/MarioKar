@@ -1,0 +1,10 @@
+Output: Generates pick and place files
+Type  : Pick Place
+From  : Variant [[No Variations]] of PCB Document [Finger_IMU_PCB.PcbDoc]
+   Generated File[Pick Place for Finger_IMU_PCB.csv]
+
+
+Files Generated   : 1
+Documents Printed : 0
+
+Finished Output Generation At 12:11:35 PM On 10/4/2025

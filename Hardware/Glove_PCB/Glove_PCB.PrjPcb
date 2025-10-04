@@ -39,8 +39,8 @@ LogFolderPath=..\Panel Templates\Project Logs
 ManagedProjectGUID=
 Template=dxp://VaultExplorer:Navigate_URL?VaultGUID=7D26C808-389D-48C9-9A90-FBA028EE95B2&ItemGUID=099781A4-FDCE-4F07-BA5C-5E0AEBD89978&RevisionGUID=B1B03EBF-7333-4F85-B169-2E50070804DC&"MainFilename=PCB_Project1.PrjPCB"
 IncludeDesignInRelease=0
-CrossRefSheetStyle=0
-CrossRefLocationStyle=0
+CrossRefSheetStyle=1
+CrossRefLocationStyle=1
 CrossRefPorts=0
 CrossRefCrossSheets=1
 CrossRefSheetEntries=0
@@ -934,6 +934,23 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=
 
+[Document53]
+DocumentPath=Glove_PCB.PCBDwf
+AnnotationEnabled=1
+AnnotateStartValue=1
+AnnotationIndexControlEnabled=0
+AnnotateSuffix=
+AnnotateScope=All
+AnnotateOrder=-1
+DoLibraryUpdate=1
+DoDatabaseUpdate=1
+ClassGenCCAutoEnabled=1
+ClassGenCCAutoRoomEnabled=0
+ClassGenNCAutoScope=None
+DItemRevisionGUID=
+GenerateClassCluster=0
+DocumentUniqueId=YWTJKXSY
+
 [ProjectVariant1]
 UniqueId=054cb536-6207-45ad-ae2c-bcc49212930b
 Description=Manufacture
@@ -1747,6 +1764,14 @@ Type148=1
 Type149=1
 Type150=1
 Type151=1
+Type152=1
+Type153=1
+Type154=1
+Type155=1
+Type156=1
+Type157=1
+Type158=1
+Type159=1
 
 [Difference Levels]
 Type1=1
@@ -1831,6 +1856,11 @@ Type79=1
 Type80=1
 Type81=1
 Type82=1
+Type83=1
+Type84=1
+Type85=1
+Type86=1
+Type87=1
 
 [Electrical Rules Check]
 Type1=1
@@ -1994,6 +2024,8 @@ Type158=0
 Type159=0
 Type160=0
 Type161=0
+Type162=1
+Type163=1
 
 [ERC Connection Matrix]
 L1=NNNNNNNNNNNNNNNNW
