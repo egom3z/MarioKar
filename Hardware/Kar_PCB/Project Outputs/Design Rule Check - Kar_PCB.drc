@@ -1,7 +1,7 @@
 Protel Design System Design Rule Check
 PCB File : C:\Users\nicol\Documents\MarioKar\Hardware\Kar_PCB\Kar_PCB.PcbDoc
 Date     : 10/4/2025
-Time     : 3:07:11 PM
+Time     : 3:16:39 PM
 
 Processing Rule : Clearance Constraint (Gap=2mil) (OnLayer('Keep-Out Layer')),(All)
 Rule Violations :0
@@ -63,4 +63,4 @@ Rule Violations :0
 
 Violations Detected : 0
 Waived Violations : 0
-Time Elapsed        : 00:00:00
+Time Elapsed        : 00:00:01
