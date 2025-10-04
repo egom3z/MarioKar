@@ -1,0 +1,73 @@
+# Created by Ultra Librarian 8.3.372 Copyright � 1999-2024
+# Frank Frank, Accelerated Designs
+
+StartFootprints
+
+Footprint (Name "CONN03_22289033_MOL")
+Pad (Name "1") (Location 0, 0) (Slotted False) (HoleSize 42) (Surface False) (Rotation 0) (ExpandMask 0) (ExpandPaste -31)
+PadShape (Size 62, 62) (Shape Rounded) (Layer Top)
+PadShape (Size 62, 62) (Shape Rounded) (Layer Bottom)
+EndPad
+Pad (Name "2") (Location -100, 0) (Slotted False) (HoleSize 42) (Surface False) (Rotation 0) (ExpandMask 0) (ExpandPaste -31)
+PadShape (Size 62, 62) (Shape Rounded) (Layer Top)
+PadShape (Size 62, 62) (Shape Rounded) (Layer Bottom)
+EndPad
+Pad (Name "3") (Location -200, 0) (Slotted False) (HoleSize 42) (Surface False) (Rotation 0) (ExpandMask 0) (ExpandPaste -31)
+PadShape (Size 62, 62) (Shape Rounded) (Layer Top)
+PadShape (Size 62, 62) (Shape Rounded) (Layer Bottom)
+EndPad
+Line (Width 6) (Start -260, 41) (End -260, -494.07998657) (Layer Mechanical15) 
+Line (Width 6) (Start -260, -494.07998657) (End 60, -494.07998657) (Layer Mechanical15) 
+Line (Width 6) (Start 60, -494.07998657) (End 60, 41) (Layer Mechanical15) 
+Line (Width 6) (Start 60, 41) (End -260, 41) (Layer Mechanical15) 
+Polygon (PointCount 4) (Layer Mechanical15) 
+Point (-260, 41)
+Point (-260, -494.07998657)
+Point (60, -494.07998657)
+Point (60, 41)
+EndPolygon
+Line (Width 6) (Start -255, -489.07998657) (End 55, -489.07998657) (Layer TopOverlay) 
+Line (Width 6) (Start 55, -489.07998657) (End 55, -65.08000183) (Layer TopOverlay) 
+Line (Width 6) (Start 55, -65.08000183) (End -255, -65.08000183) (Layer TopOverlay) 
+Line (Width 6) (Start -255, -65.08000183) (End -255, -489.07998657) (Layer TopOverlay) 
+Arc (Width 20) (Radius 15) (Location 90, 0) (StartAngle 0) (EndAngle 360) (Layer TopOverlay) 
+Text (Location -175, -25) (Height 50) (Width 3) (Rotation 0) (Layer TopOverlay) (Value "RefDes")
+Line (Width 1) (Start -250, -484.07998657) (End 50, -484.07998657) (Layer Mechanical13) 
+Line (Width 1) (Start 50, -484.07998657) (End 50, -70.08000183) (Layer Mechanical13) 
+Line (Width 1) (Start 50, -70.08000183) (End -250, -70.08000183) (Layer Mechanical13) 
+Line (Width 1) (Start -250, -70.08000183) (End -250, -484.07998657) (Layer Mechanical13) 
+Arc (Width 20) (Radius 15) (Location 0, 71) (StartAngle 0) (EndAngle 360) (Layer Mechanical13) 
+Text (Location -187.5, -25) (Height 50) (Width 3) (Rotation 0) (Layer Mechanical13) (Value "RefDes2")
+Text (Location -187.5, -25) (Height 50) (Width 3) (Rotation 0) (Layer TopOverlay) (Value "REFDES")
+Arc (Width 20) (Radius 15) (Location 90, 0) (StartAngle 0) (EndAngle 360) (Layer BottomOverlay) 
+EndFootprint
+EndFootprints
+
+StartComponents
+
+Component (Name "22289033") (PartCount 1) (DesPrefix "J?")
+Pin (Location 200, 0) (Rotation 180) (PinType Passive) (Length 200) (Width 0) (Designator Visible "1") (Name Hidden "1") (PinSwap 0) (PartSwap 0) (PinSeq 1) (Part 1)
+Pin (Location 200, -100) (Rotation 180) (PinType Passive) (Length 200) (Width 0) (Designator Visible "2") (Name Hidden "2") (PinSwap 0) (PartSwap 0) (PinSeq 2) (Part 1)
+Pin (Location 200, -200) (Rotation 180) (PinType Passive) (Length 200) (Width 0) (Designator Visible "3") (Name Hidden "3") (PinSwap 0) (PartSwap 0) (PinSeq 3) (Part 1)
+Line (Width 1) (Start 400, 0) (End 200, 0) (Part 1)
+Line (Width 1) (Start 400, -100) (End 200, -100) (Part 1)
+Line (Width 1) (Start 400, -200) (End 200, -200) (Part 1)
+Line (Width 1) (Start 400, 0) (End 350, 33.3333) (Part 1)
+Line (Width 1) (Start 400, -100) (End 350, -66.6667) (Part 1)
+Line (Width 1) (Start 400, -200) (End 350, -166.6667) (Part 1)
+Line (Width 1) (Start 400, 0) (End 350, -33.3333) (Part 1)
+Line (Width 1) (Start 400, -100) (End 350, -133.3333) (Part 1)
+Line (Width 1) (Start 400, -200) (End 350, -233.3333) (Part 1)
+Rectangle (Width 5) (Start 200, -300) (End 500, 100) (Part 1)
+Parameter (Name "Copyright") (Location 0, 0) (Height 50) (Rotation 0) (Justification Center) (Value "Copyright (C) 2025 Ultra Librarian. All rights reserved.") (Part 1)
+Parameter (Name "Manufacturer_Name") (Location 0, 0) (Height 50) (Rotation 0) (Justification Center) (Value "Molex Connector Corporation") (Part 1)
+Parameter (Name "Manufacturer_Part_Number") (Location 0, 0) (Height 50) (Rotation 0) (Justification Center) (Value "22289033") (Part 1)
+Parameter (Name "Description") (Location 0, 0) (Height 50) (Rotation 0) (Justification Center) (Value "KK 254 Breakaway Header, Right-Angle Surface Mount Compatible, 3 Circuits, 0.38µm Gold (Au) Selective Plating, Mating Pin Length 8.23mm, with Kinked PC Tails") (Part 1)
+Parameter (Name "Datasheet") (Location 0, 0) (Height 50) (Rotation 0) (Justification Center) (Value "https://www.molex.com/en-us/products/part-detail-pdf/22289033?display=pdf") (Part 1)
+Parameter (Name "RefDes") (Location 350, 250) (Height 82) (Rotation 0) (Justification Center) (Value "RefDes") (Part 1)
+Parameter (Name "Type") (Location 400, -100) (Height 82) (Rotation 0) (Justification Center) (Value "Type") (Part 1)
+Description (Value "KK 254 Breakaway Header, Right-Angle Surface Mount Compatible, 3 Circuits, 0.38µm Gold (Au) Selective Plating, Mating Pin Length 8.23mm, with Kinked PC Tails") (Part 1)
+Comment (Value "22289033") (Part 1)
+Footprint (Name "CONN03_22289033_MOL")
+EndComponent
+EndComponents

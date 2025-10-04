@@ -1,0 +1,150 @@
+# Created by Ultra Librarian 8.3.372 Copyright © 1999-2024
+# Frank Frank, Accelerated Designs
+
+StartFootprints
+
+Footprint (Name "MMC5983MA_MEM")
+Pad (Name "1") (Location -50.1968, 29.5276) (Surface True) (Rotation 270) (ExpandMask 0) (ExpandPaste 0)
+PadShape (Size 12, 18) (Shape Rectangular) (Layer Top)
+EndPad
+Pad (Name "2") (Location -50.1968, 9.8425) (Surface True) (Rotation 270) (ExpandMask 0) (ExpandPaste 0)
+PadShape (Size 12, 18) (Shape Rectangular) (Layer Top)
+EndPad
+Pad (Name "3") (Location -50.1968, -9.8425) (Surface True) (Rotation 270) (ExpandMask 0) (ExpandPaste 0)
+PadShape (Size 12, 18) (Shape Rectangular) (Layer Top)
+EndPad
+Pad (Name "4") (Location -50.1968, -29.5276) (Surface True) (Rotation 270) (ExpandMask 0) (ExpandPaste 0)
+PadShape (Size 12, 18) (Shape Rectangular) (Layer Top)
+EndPad
+Pad (Name "5") (Location -29.5276, -50.1968) (Surface True) (Rotation 180) (ExpandMask 0) (ExpandPaste 0)
+PadShape (Size 12, 18) (Shape Rectangular) (Layer Top)
+EndPad
+Pad (Name "6") (Location -9.8425, -50.1968) (Surface True) (Rotation 180) (ExpandMask 0) (ExpandPaste 0)
+PadShape (Size 12, 18) (Shape Rectangular) (Layer Top)
+EndPad
+Pad (Name "7") (Location 9.8425, -50.1968) (Surface True) (Rotation 180) (ExpandMask 0) (ExpandPaste 0)
+PadShape (Size 12, 18) (Shape Rectangular) (Layer Top)
+EndPad
+Pad (Name "8") (Location 29.5276, -50.1968) (Surface True) (Rotation 180) (ExpandMask 0) (ExpandPaste 0)
+PadShape (Size 12, 18) (Shape Rectangular) (Layer Top)
+EndPad
+Pad (Name "9") (Location 50.1968, -29.5276) (Surface True) (Rotation 270) (ExpandMask 0) (ExpandPaste 0)
+PadShape (Size 12, 18) (Shape Rectangular) (Layer Top)
+EndPad
+Pad (Name "10") (Location 50.1968, -9.8425) (Surface True) (Rotation 270) (ExpandMask 0) (ExpandPaste 0)
+PadShape (Size 12, 18) (Shape Rectangular) (Layer Top)
+EndPad
+Pad (Name "11") (Location 50.1968, 9.8425) (Surface True) (Rotation 270) (ExpandMask 0) (ExpandPaste 0)
+PadShape (Size 12, 18) (Shape Rectangular) (Layer Top)
+EndPad
+Pad (Name "12") (Location 50.1968, 29.5276) (Surface True) (Rotation 270) (ExpandMask 0) (ExpandPaste 0)
+PadShape (Size 12, 18) (Shape Rectangular) (Layer Top)
+EndPad
+Pad (Name "13") (Location 29.5276, 50.1968) (Surface True) (Rotation 180) (ExpandMask 0) (ExpandPaste 0)
+PadShape (Size 12, 18) (Shape Rectangular) (Layer Top)
+EndPad
+Pad (Name "14") (Location 9.8425, 50.1968) (Surface True) (Rotation 180) (ExpandMask 0) (ExpandPaste 0)
+PadShape (Size 12, 18) (Shape Rectangular) (Layer Top)
+EndPad
+Pad (Name "15") (Location -9.8425, 50.1968) (Surface True) (Rotation 180) (ExpandMask 0) (ExpandPaste 0)
+PadShape (Size 12, 18) (Shape Rectangular) (Layer Top)
+EndPad
+Pad (Name "16") (Location -29.5276, 50.1968) (Surface True) (Rotation 180) (ExpandMask 0) (ExpandPaste 0)
+PadShape (Size 12, 18) (Shape Rectangular) (Layer Top)
+EndPad
+Line (Width 6) (Start -74, -74) (End 74, -74) (Layer TopOverlay) 
+Line (Width 6) (Start 74, -74) (End 74, 74) (Layer TopOverlay) 
+Line (Width 6) (Start 74, 74) (End -74, 74) (Layer TopOverlay) 
+Line (Width 6) (Start -74, 74) (End -74, -74) (Layer TopOverlay) 
+Polygon (PointCount 4) (Layer TopOverlay) 
+Point (79.1968, -2.3425)
+Point (79.1968, -17.3425)
+Point (69.1968, -17.3425)
+Point (69.1968, -2.3425)
+EndPolygon
+Text (Location -96.69685364, 29.37007904) (Height 50) (Width 3) (Rotation 0) (Layer TopOverlay) (Value "*")
+Text (Location -75, -25) (Height 50) (Width 3) (Rotation 0) (Layer TopOverlay) (Value "RefDes")
+Line (Width 6) (Start -69, -69) (End -69, -45.52756119) (Layer Mechanical15) 
+Line (Width 6) (Start -69, -45.52756119) (End -69.19685364, -45.52756119) (Layer Mechanical15) 
+Line (Width 6) (Start -69.19685364, -45.52756119) (End -69.19685364, 45.52756119) (Layer Mechanical15) 
+Line (Width 6) (Start -69.19685364, 45.52756119) (End -69, 45.52756119) (Layer Mechanical15) 
+Line (Width 6) (Start -69, 45.52756119) (End -69, 69) (Layer Mechanical15) 
+Line (Width 6) (Start -69, 69) (End -45.52756119, 69) (Layer Mechanical15) 
+Line (Width 6) (Start -45.52756119, 69) (End -45.52756119, 69.19685364) (Layer Mechanical15) 
+Line (Width 6) (Start -45.52756119, 69.19685364) (End 45.52756119, 69.19685364) (Layer Mechanical15) 
+Line (Width 6) (Start 45.52756119, 69.19685364) (End 45.52756119, 69) (Layer Mechanical15) 
+Line (Width 6) (Start 45.52756119, 69) (End 69, 69) (Layer Mechanical15) 
+Line (Width 6) (Start 69, 69) (End 69, 45.52756119) (Layer Mechanical15) 
+Line (Width 6) (Start 69, 45.52756119) (End 69.19685364, 45.52756119) (Layer Mechanical15) 
+Line (Width 6) (Start 69.19685364, 45.52756119) (End 69.19685364, -45.52756119) (Layer Mechanical15) 
+Line (Width 6) (Start 69.19685364, -45.52756119) (End 69, -45.52756119) (Layer Mechanical15) 
+Line (Width 6) (Start 69, -45.52756119) (End 69, -69) (Layer Mechanical15) 
+Line (Width 6) (Start 69, -69) (End 45.52756119, -69) (Layer Mechanical15) 
+Line (Width 6) (Start 45.52756119, -69) (End 45.52756119, -69.19685364) (Layer Mechanical15) 
+Line (Width 6) (Start 45.52756119, -69.19685364) (End -45.52756119, -69.19685364) (Layer Mechanical15) 
+Line (Width 6) (Start -45.52756119, -69.19685364) (End -45.52756119, -69) (Layer Mechanical15) 
+Line (Width 6) (Start -45.52756119, -69) (End -69, -69) (Layer Mechanical15) 
+Polygon (PointCount 20) (Layer Mechanical15) 
+Point (-69, -69)
+Point (-69, -45.52756119)
+Point (-69.19685364, -45.52756119)
+Point (-69.19685364, 45.52756119)
+Point (-69, 45.52756119)
+Point (-69, 69)
+Point (-45.52756119, 69)
+Point (-45.52756119, 69.19685364)
+Point (45.52756119, 69.19685364)
+Point (45.52756119, 69)
+Point (69, 69)
+Point (69, 45.52756119)
+Point (69.19685364, 45.52756119)
+Point (69.19685364, -45.52756119)
+Point (69, -45.52756119)
+Point (69, -69)
+Point (45.52756119, -69)
+Point (45.52756119, -69.19685364)
+Point (-45.52756119, -69.19685364)
+Point (-45.52756119, -69)
+EndPolygon
+Line (Width 1) (Start -59, 9) (End -9, 59) (Layer Mechanical13) 
+Line (Width 1) (Start -59, -59) (End 59, -59) (Layer Mechanical13) 
+Line (Width 1) (Start 59, -59) (End 59, 59) (Layer Mechanical13) 
+Line (Width 1) (Start 59, 59) (End -59, 59) (Layer Mechanical13) 
+Line (Width 1) (Start -59, 59) (End -59, -59) (Layer Mechanical13) 
+Text (Location -43.69684982, 14.37007904) (Height 50) (Width 3) (Rotation 0) (Layer Mechanical13) (Value "*")
+Text (Location -87.5, -25) (Height 50) (Width 3) (Rotation 0) (Layer Mechanical13) (Value "RefDes2")
+Text (Location -87.5, -25) (Height 50) (Width 3) (Rotation 0) (Layer TopOverlay) (Value "REFDES")
+Step (Name MMC5983MA_MEM.step)
+EndFootprint
+EndFootprints
+
+StartComponents
+
+Component (Name "MMC5983MA") (PartCount 1) (DesPrefix "U?")
+Pin (Location 300, 0) (Rotation 180) (PinType Input) (Length 300) (Width 0) (Designator Visible "1") (Name Visible "SCL/SPI_SCK") (PinSwap 0) (PartSwap 0) (PinSeq 1) (Part 1)
+Pin (Location 300, -100) (Rotation 180) (PinType Power) (Length 300) (Width 0) (Designator Visible "2") (Name Visible "VDD") (PinSwap 0) (PartSwap 0) (PinSeq 2) (Part 1)
+Pin (Location 300, -200) (Rotation 180) (PinType Passive) (Length 300) (Width 0) (Designator Visible "3") (Name Visible "NC") (PinSwap 0) (PartSwap 0) (PinSeq 3) (Part 1)
+Pin (Location 300, -300) (Rotation 180) (PinType Input) (Length 300) (Width 0) (Designator Visible "4") (Name Visible "SPI_CS") (PinSwap 0) (PartSwap 0) (PinSeq 4) (Part 1)
+Pin (Location 300, -400) (Rotation 180) (PinType Output) (Length 300) (Width 0) (Designator Visible "5") (Name Visible "SPI_SDO") (PinSwap 0) (PartSwap 0) (PinSeq 5) (Part 1)
+Pin (Location 300, -500) (Rotation 180) (PinType Passive) (Length 300) (Width 0) (Designator Visible "6") (Name Visible "NC") (PinSwap 0) (PartSwap 0) (PinSeq 6) (Part 1)
+Pin (Location 300, -600) (Rotation 180) (PinType Passive) (Length 300) (Width 0) (Designator Visible "7") (Name Visible "NC") (PinSwap 0) (PartSwap 0) (PinSeq 7) (Part 1)
+Pin (Location 300, -700) (Rotation 180) (PinType Passive) (Length 300) (Width 0) (Designator Visible "8") (Name Visible "NC") (PinSwap 0) (PartSwap 0) (PinSeq 8) (Part 1)
+Pin (Location 2500, -700) (Rotation 0) (PinType Power) (Length 300) (Width 0) (Designator Visible "9") (Name Visible "GND") (PinSwap 0) (PartSwap 0) (PinSeq 9) (Part 1)
+Pin (Location 2500, -600) (Rotation 0) (PinType Power) (Length 300) (Width 0) (Designator Visible "10") (Name Visible "CAP") (PinSwap 0) (PartSwap 0) (PinSeq 10) (Part 1)
+Pin (Location 2500, -500) (Rotation 0) (PinType Power) (Length 300) (Width 0) (Designator Visible "11") (Name Visible "GND") (PinSwap 0) (PartSwap 0) (PinSeq 11) (Part 1)
+Pin (Location 2500, -400) (Rotation 0) (PinType Passive) (Length 300) (Width 0) (Designator Visible "12") (Name Visible "NC") (PinSwap 0) (PartSwap 0) (PinSeq 12) (Part 1)
+Pin (Location 2500, -300) (Rotation 0) (PinType Power) (Length 300) (Width 0) (Designator Visible "13") (Name Visible "VDDIO") (PinSwap 0) (PartSwap 0) (PinSeq 13) (Part 1)
+Pin (Location 2500, -200) (Rotation 0) (PinType Passive) (Length 300) (Width 0) (Designator Visible "14") (Name Visible "NC") (PinSwap 0) (PartSwap 0) (PinSeq 14) (Part 1)
+Pin (Location 2500, -100) (Rotation 0) (PinType Output) (Length 300) (Width 0) (Designator Visible "15") (Name Visible "INT") (PinSwap 0) (PartSwap 0) (PinSeq 15) (Part 1)
+Pin (Location 2500, 0) (Rotation 0) (PinType IO) (Length 300) (Width 0) (Designator Visible "16") (Name Visible "SDA/SPI_SDI") (PinSwap 0) (PartSwap 0) (PinSeq 16) (Part 1)
+Rectangle (Width 5) (Start 300, -900) (End 2500, 200) (Part 1)
+Parameter (Name "Copyright") (Location 0, 0) (Height 50) (Rotation 0) (Justification Center) (Value "Copyright (C) 2025 Ultra Librarian. All rights reserved.") (Part 1)
+Parameter (Name "Manufacturer_Name") (Location 0, 0) (Height 50) (Rotation 0) (Justification Center) (Value "Memsic") (Part 1)
+Parameter (Name "Manufacturer_Part_Number") (Location 0, 0) (Height 50) (Rotation 0) (Justification Center) (Value "MMC5983MA") (Part 1)
+Parameter (Name "RefDes") (Location 1400, 400) (Height 82) (Rotation 0) (Justification Center) (Value "RefDes") (Part 1)
+Parameter (Name "Type") (Location 1400, 300) (Height 82) (Rotation 0) (Justification Center) (Value "Type") (Part 1)
+Description (Value "No Description Available") (Part 1)
+Comment (Value "MMC5983MA") (Part 1)
+Footprint (Name "MMC5983MA_MEM")
+EndComponent
+EndComponents
