@@ -1019,8 +1019,258 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=LVIKLTQE
 
+[Document58]
+DocumentPath=..\Libraries\MMC5983MA\Kar_PCB.PCBDwf
+AnnotationEnabled=1
+AnnotateStartValue=1
+AnnotationIndexControlEnabled=0
+AnnotateSuffix=
+AnnotateScope=All
+AnnotateOrder=-1
+DoLibraryUpdate=1
+DoDatabaseUpdate=1
+ClassGenCCAutoEnabled=1
+ClassGenCCAutoRoomEnabled=0
+ClassGenNCAutoScope=None
+DItemRevisionGUID=
+GenerateClassCluster=0
+DocumentUniqueId=LDYUAMBI
+
+[Document59]
+DocumentPath=Karjob.OutJob
+AnnotationEnabled=1
+AnnotateStartValue=1
+AnnotationIndexControlEnabled=0
+AnnotateSuffix=
+AnnotateScope=All
+AnnotateOrder=-1
+DoLibraryUpdate=1
+DoDatabaseUpdate=1
+ClassGenCCAutoEnabled=1
+ClassGenCCAutoRoomEnabled=0
+ClassGenNCAutoScope=None
+DItemRevisionGUID=
+GenerateClassCluster=0
+DocumentUniqueId=
+
 [GeneratedDocument1]
+DocumentPath=Project Outputs for Free Documents\BOM\Bill of Materials-ActiveBOM.xlsx
+DItemRevisionGUID=
+
+[GeneratedDocument2]
+DocumentPath=Project Outputs for Free Documents\ODB\odb\steps\pcb\layers\comp_+_bot\components
+DItemRevisionGUID=
+
+[GeneratedDocument3]
+DocumentPath=Project Outputs for Free Documents\ODB\odb\steps\pcb\layers\comp_+_top\components
+DItemRevisionGUID=
+
+[GeneratedDocument4]
+DocumentPath=Project Outputs for Free Documents\ODB\odb\steps\pcb\eda\data
+DItemRevisionGUID=
+
+[GeneratedDocument5]
 DocumentPath=Project Outputs\Design Rule Check - Kar_PCB.html
+DItemRevisionGUID=
+
+[GeneratedDocument6]
+DocumentPath=Project Outputs for Free Documents\ODB\odb\steps\pcb\layers\bottom_layer\features
+DItemRevisionGUID=
+
+[GeneratedDocument7]
+DocumentPath=Project Outputs for Free Documents\ODB\odb\steps\pcb\layers\bottom_overlay\features
+DItemRevisionGUID=
+
+[GeneratedDocument8]
+DocumentPath=Project Outputs for Free Documents\ODB\odb\steps\pcb\layers\bottom_paste\features
+DItemRevisionGUID=
+
+[GeneratedDocument9]
+DocumentPath=Project Outputs for Free Documents\ODB\odb\steps\pcb\layers\bottom_solder\features
+DItemRevisionGUID=
+
+[GeneratedDocument10]
+DocumentPath=Project Outputs for Free Documents\ODB\odb\steps\pcb\layers\comp_+_bot\features
+DItemRevisionGUID=
+
+[GeneratedDocument11]
+DocumentPath=Project Outputs for Free Documents\ODB\odb\steps\pcb\layers\comp_+_top\features
+DItemRevisionGUID=
+
+[GeneratedDocument12]
+DocumentPath=Project Outputs for Free Documents\ODB\odb\steps\pcb\layers\dielectric_1\features
+DItemRevisionGUID=
+
+[GeneratedDocument13]
+DocumentPath=Project Outputs for Free Documents\ODB\odb\steps\pcb\layers\drill_non-plated_bottom_layer-top_layer\features
+DItemRevisionGUID=
+
+[GeneratedDocument14]
+DocumentPath=Project Outputs for Free Documents\ODB\odb\steps\pcb\layers\drill_plated_bottom_layer-top_layer\features
+DItemRevisionGUID=
+
+[GeneratedDocument15]
+DocumentPath=Project Outputs for Free Documents\ODB\odb\steps\pcb\layers\top_layer\features
+DItemRevisionGUID=
+
+[GeneratedDocument16]
+DocumentPath=Project Outputs for Free Documents\ODB\odb\steps\pcb\layers\top_overlay\features
+DItemRevisionGUID=
+
+[GeneratedDocument17]
+DocumentPath=Project Outputs for Free Documents\ODB\odb\steps\pcb\layers\top_paste\features
+DItemRevisionGUID=
+
+[GeneratedDocument18]
+DocumentPath=Project Outputs for Free Documents\ODB\odb\steps\pcb\layers\top_solder\features
+DItemRevisionGUID=
+
+[GeneratedDocument19]
+DocumentPath=Project Outputs for Free Documents\NC Drill\Kar_PCB.DRR
+DItemRevisionGUID=
+
+[GeneratedDocument20]
+DocumentPath=Project Outputs for Free Documents\Gerber\Kar_PCB.EXTREP
+DItemRevisionGUID=
+
+[GeneratedDocument21]
+DocumentPath=Project Outputs for Free Documents\Gerber\Kar_PCB.GBL
+DItemRevisionGUID=
+
+[GeneratedDocument22]
+DocumentPath=Project Outputs for Free Documents\Gerber\Kar_PCB.GBO
+DItemRevisionGUID=
+
+[GeneratedDocument23]
+DocumentPath=Project Outputs for Free Documents\Gerber\Kar_PCB.GBP
+DItemRevisionGUID=
+
+[GeneratedDocument24]
+DocumentPath=Project Outputs for Free Documents\Gerber\Kar_PCB.GBS
+DItemRevisionGUID=
+
+[GeneratedDocument25]
+DocumentPath=Project Outputs for Free Documents\Gerber\Kar_PCB.GD1
+DItemRevisionGUID=
+
+[GeneratedDocument26]
+DocumentPath=Project Outputs for Free Documents\Gerber\Kar_PCB.GG1
+DItemRevisionGUID=
+
+[GeneratedDocument27]
+DocumentPath=Project Outputs for Free Documents\Gerber\Kar_PCB.GKO
+DItemRevisionGUID=
+
+[GeneratedDocument28]
+DocumentPath=Project Outputs for Free Documents\Gerber\Kar_PCB.GM
+DItemRevisionGUID=
+
+[GeneratedDocument29]
+DocumentPath=Project Outputs for Free Documents\Gerber\Kar_PCB.GM1
+DItemRevisionGUID=
+
+[GeneratedDocument30]
+DocumentPath=Project Outputs for Free Documents\Gerber\Kar_PCB.GM2
+DItemRevisionGUID=
+
+[GeneratedDocument31]
+DocumentPath=Project Outputs for Free Documents\Gerber\Kar_PCB.GM3
+DItemRevisionGUID=
+
+[GeneratedDocument32]
+DocumentPath=Project Outputs for Free Documents\Gerber\Kar_PCB.GM13
+DItemRevisionGUID=
+
+[GeneratedDocument33]
+DocumentPath=Project Outputs for Free Documents\Gerber\Kar_PCB.GM15
+DItemRevisionGUID=
+
+[GeneratedDocument34]
+DocumentPath=Project Outputs for Free Documents\Gerber\Kar_PCB.GM20
+DItemRevisionGUID=
+
+[GeneratedDocument35]
+DocumentPath=Project Outputs for Free Documents\Gerber\Kar_PCB.GPB
+DItemRevisionGUID=
+
+[GeneratedDocument36]
+DocumentPath=Project Outputs for Free Documents\Gerber\Kar_PCB.GPT
+DItemRevisionGUID=
+
+[GeneratedDocument37]
+DocumentPath=Project Outputs for Free Documents\Gerber\Kar_PCB.GTL
+DItemRevisionGUID=
+
+[GeneratedDocument38]
+DocumentPath=Project Outputs for Free Documents\Gerber\Kar_PCB.GTO
+DItemRevisionGUID=
+
+[GeneratedDocument39]
+DocumentPath=Project Outputs for Free Documents\Gerber\Kar_PCB.GTP
+DItemRevisionGUID=
+
+[GeneratedDocument40]
+DocumentPath=Project Outputs for Free Documents\Gerber\Kar_PCB.GTS
+DItemRevisionGUID=
+
+[GeneratedDocument41]
+DocumentPath=Project Outputs for Free Documents\NC Drill\Kar_PCB.LDP
+DItemRevisionGUID=
+
+[GeneratedDocument42]
+DocumentPath=Project Outputs for Free Documents\Gerber\Kar_PCB.REP
+DItemRevisionGUID=
+
+[GeneratedDocument43]
+DocumentPath=Project Outputs for Free Documents\ODB\Kar_PCB.REP
+DItemRevisionGUID=
+
+[GeneratedDocument44]
+DocumentPath=Project Outputs for Free Documents\NC Drill\Kar_PCB.TXT
+DItemRevisionGUID=
+
+[GeneratedDocument45]
+DocumentPath=Project Outputs for Free Documents\ODB\odb\matrix\matrix
+DItemRevisionGUID=
+
+[GeneratedDocument46]
+DocumentPath=Project Outputs for Free Documents\ODB\odb\steps\pcb\netlists\cadnet\netlist
+DItemRevisionGUID=
+
+[GeneratedDocument47]
+DocumentPath=Project Outputs for Free Documents\Pick Place\Pick Place for Kar_PCB.csv
+DItemRevisionGUID=
+
+[GeneratedDocument48]
+DocumentPath=Project Outputs for Free Documents\Pick Place\Pick Place for Kar_PCB.txt
+DItemRevisionGUID=
+
+[GeneratedDocument49]
+DocumentPath=Project Outputs for Free Documents\ODB\odb\steps\pcb\profile
+DItemRevisionGUID=
+
+[GeneratedDocument50]
+DocumentPath=..\..\..\..\AppData\Local\Temp\Qjz8B99.xls
+DItemRevisionGUID=
+
+[GeneratedDocument51]
+DocumentPath=..\..\..\..\AppData\Local\Temp\Qjz5321.xls
+DItemRevisionGUID=
+
+[GeneratedDocument52]
+DocumentPath=..\..\..\..\AppData\Local\Temp\QjzA3E4.xls
+DItemRevisionGUID=
+
+[GeneratedDocument53]
+DocumentPath=Project Outputs for Free Documents\ODB\odb\steps\pcb\stephdr
+DItemRevisionGUID=
+
+[GeneratedDocument54]
+DocumentPath=Project Outputs for Free Documents\ODB\odb\steps\pcb\layers\drill_non-plated_bottom_layer-top_layer\tools
+DItemRevisionGUID=
+
+[GeneratedDocument55]
+DocumentPath=Project Outputs for Free Documents\ODB\odb\steps\pcb\layers\drill_plated_bottom_layer-top_layer\tools
 DItemRevisionGUID=
 
 [Parameter1]

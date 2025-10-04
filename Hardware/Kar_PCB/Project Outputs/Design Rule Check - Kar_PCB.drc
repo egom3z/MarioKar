@@ -1,7 +1,7 @@
 Protel Design System Design Rule Check
 PCB File : C:\Users\nicol\Documents\MarioKar\Hardware\Kar_PCB\Kar_PCB.PcbDoc
 Date     : 10/4/2025
-Time     : 3:16:39 PM
+Time     : 5:23:51 PM
 
 Processing Rule : Clearance Constraint (Gap=2mil) (OnLayer('Keep-Out Layer')),(All)
 Rule Violations :0
@@ -21,10 +21,10 @@ Rule Violations :0
 Processing Rule : Modified Polygon (Allow modified: No), (Allow shelved: No)
 Rule Violations :0
 
-Processing Rule : Width Constraint (Min=12.313mil) (Max=12.313mil) (Preferred=12.313mil) (InNetClass('S50'))
+Processing Rule : Width Constraint (Min=9.152mil) (Max=9.152mil) (Preferred=9.152mil) (InNetClass('S50'))
 Rule Violations :0
 
-Processing Rule : Width Constraint (Min=7.686mil) (Max=7.686mil) (Preferred=7.686mil) (InNetClass('S62'))
+Processing Rule : Width Constraint (Min=4.567mil) (Max=4.567mil) (Preferred=4.567mil) (InNetClass('S62'))
 Rule Violations :0
 
 Processing Rule : Width Constraint (Min=8mil) (Max=50mil) (Preferred=10mil) (All)
@@ -63,4 +63,4 @@ Rule Violations :0
 
 Violations Detected : 0
 Waived Violations : 0
-Time Elapsed        : 00:00:01
+Time Elapsed        : 00:00:00
