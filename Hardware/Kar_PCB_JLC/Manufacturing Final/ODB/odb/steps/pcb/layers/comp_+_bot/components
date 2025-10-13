@@ -1,0 +1,180 @@
+UNITS=MM
+#
+#Component attribute names
+#
+@0 .comp_mount_type
+@1 .comp_height
+@2 .no_pop
+@3 .comp_ignore
+@4 .comp_variant_list
+@5 .placement_layer
+
+#
+#Component attribute text strings
+#
+&0 bottom_layer
+
+# CMP 0
+CMP 2 140.208 58.27599724 270 N BT2 1048P ;0=1,1=14.8500,5=0
+PRP Availability 'In Stock'
+PRP Check_prices 'https://www.snapeda.com/parts/1048P/Keystone+Electronics/view-part/?ref=eda'
+PRP MF 'Keystone Electronics'
+PRP MP '1048P'
+PRP Package 'None'
+PRP Price 'None'
+PRP Purchase-URL 'https://pricing.snapeda.com/search/part/1048P/?ref=eda'
+PRP SnapEDA_Link 'https://www.snapeda.com/parts/1048P/Keystone+Electronics/view-part/?ref=snap'
+PRP Value ''
+TOP 0 122.70300072 30.67599656 270 N 0 33 empty-1
+TOP 1 122.70300072 94.09599672 270 N 0 40 empty-2
+TOP 2 140.208 30.67599656 270 N 0 41 empty-3
+TOP 3 140.208 85.87599792 270 N 0 39 empty-4
+TOP 4 157.71299928 85.87599792 270 N 0 37 empty-5
+TOP 5 149.76299994 97.60599732 270 N 19 6 N1
+TOP 6 130.65300006 18.94599716 270 N 38 31 N2
+TOP 7 149.76299994 18.94599716 270 N 20 8 P1
+TOP 8 130.65300006 97.60599732 270 N 19 7 P2
+#
+# CMP 1
+CMP 3 81.534 58.45199892 270 N BT1 1048P ;0=1,1=14.8500,5=0
+PRP Availability 'In Stock'
+PRP Check_prices 'https://www.snapeda.com/parts/1048P/Keystone+Electronics/view-part/?ref=eda'
+PRP MF 'Keystone Electronics'
+PRP MP '1048P'
+PRP Package 'None'
+PRP Price 'None'
+PRP Purchase-URL 'https://pricing.snapeda.com/search/part/1048P/?ref=eda'
+PRP SnapEDA_Link 'https://www.snapeda.com/parts/1048P/Keystone+Electronics/view-part/?ref=snap'
+PRP Value ''
+TOP 0 99.03899928 86.0519996 270 N 0 38 empty-1
+TOP 1 81.534 86.0519996 270 N 0 25 empty-2
+TOP 2 81.534 30.85199824 270 N 0 26 empty-3
+TOP 3 64.02900072 94.2719984 270 N 0 24 empty-4
+TOP 4 64.02900072 30.85199824 270 N 0 22 empty-5
+TOP 5 91.08899994 97.781999 270 N 19 9 N1
+TOP 6 71.97900006 19.12199884 270 N 38 32 N2
+TOP 7 91.08899994 19.12199884 270 N 20 7 P1
+TOP 8 71.97900006 97.781999 270 N 19 8 P2
+#
+# CMP 2
+CMP 16 108.331 42.82299792 0 N U1 LM3940ISX-3.3/NOPB ;0=1,1=0.0000,5=0
+PRP Copyright 'Copyright (C) 2025 Ultra Librarian. All rights reserved.'
+PRP Datasheet 'https://www.ti.com/lit/gpn/lm3940'
+PRP Manufacturer_Name 'Texas Instruments'
+PRP Manufacturer_Part_Number 'LM3940ISX-3.3/NOPB'
+PRP RefDes 'RefDes'
+PRP Type 'LM3940IS-3.3'
+TOP 0 110.871 34.54259792 180 N 39 25 1
+TOP 1 108.331 34.54259792 180 N 38 33 2
+TOP 2 105.791 34.54259792 180 N 40 40 3
+TOP 3 108.331 42.97539792 180 N 38 28 4
+#
+# CMP 3
+CMP 12 117.4369 21.87599892 180 N R6 RC0805FR-0722KL ;0=1,1=0.0000,5=0
+PRP Manufacturer_Name 'Yageo'
+PRP Manufacturer_Part_Number 'RC0805FR-0722KL'
+PRP Tolerance '1%'
+PRP Value '22k'
+TOP 0 116.586 21.87599892 0 N 26 3 1
+TOP 1 118.2878 21.87599892 0 N 38 36 2
+#
+# CMP 4
+CMP 12 113.919 21.87599892 180 N R5 RC0805FR-0718KL ;0=1,1=0.0000,5=0
+PRP Manufacturer_Name 'Yageo'
+PRP Manufacturer_Part_Number 'RC0805FR-0718KL'
+PRP Tolerance '1%'
+PRP Value '18k'
+TOP 0 113.0681 21.87599892 0 N 27 3 1
+TOP 1 114.7699 21.87599892 0 N 26 2 2
+#
+# CMP 5
+CMP 12 113.157 19.20899892 90 N R4 RC0805FR-0710KL ;0=1,1=0.0000,5=0
+PRP Manufacturer_Name 'Yageo'
+PRP Manufacturer_Part_Number 'RC0805FR-0710KL'
+PRP Tolerance '1%'
+PRP Value '10k'
+TOP 0 113.157 20.05989892 90 N 30 5 1
+TOP 1 113.157 18.35809892 90 N 38 41 2
+#
+# CMP 6
+CMP 12 107.188 23.52699892 0 N R3 RC0805FR-0718KL ;0=1,1=0.0000,5=0
+PRP Manufacturer_Name 'Yageo'
+PRP Manufacturer_Part_Number 'RC0805FR-0718KL'
+PRP Tolerance '1%'
+PRP Value '18k'
+TOP 0 108.0389 23.52699892 180 N 29 3 1
+TOP 1 106.3371 23.52699892 180 N 38 42 2
+#
+# CMP 7
+CMP 12 114.935 28.34499792 45 N R2 RC0805FR-0710KL ;0=1,1=0.0000,5=0
+PRP Manufacturer_Name 'Yageo'
+PRP Manufacturer_Part_Number 'RC0805FR-0710KL'
+PRP Tolerance '1%'
+PRP Value '10k'
+TOP 0 115.53667774 28.94667566 135 N 39 31 1
+TOP 1 114.33332226 27.74332018 135 N 28 3 2
+#
+# CMP 8
+CMP 12 115.062 19.20899892 270 N R1 RC0805FR-0773K2L ;0=1,1=0.0000,5=0
+PRP Manufacturer_Name 'Yageo'
+PRP Manufacturer_Part_Number 'RC0805FR-0773K2L'
+PRP Tolerance '1%'
+PRP Value '73.2k'
+TOP 0 115.062 18.35809892 270 N 39 29 1
+TOP 1 115.062 20.05989892 270 N 30 4 2
+#
+# CMP 9
+CMP 10 109.22 19.71699892 0 N PS1 TPSM843321RCJR ;0=1,1=2.0500,5=0
+PRP Check_prices 'https://www.snapeda.com/parts/TPSM843321RCJR/Texas+Instruments/view-part/?ref=eda'
+PRP MF 'Texas Instruments'
+PRP MP 'TPSM843321RCJR'
+PRP Package 'None'
+PRP SnapEDA_Link 'https://www.snapeda.com/parts/TPSM843321RCJR/Texas+Instruments/view-part/?ref=snap'
+PRP Value ''
+TOP 0 110.66999964 21.19199978 180 N 15 4 1
+TOP 1 110.66999964 20.69199824 180 N 30 3 2
+TOP 2 110.56999984 20.17999774 180 N 38 27 3
+TOP 3 110.17000064 18.62949792 180 N 39 32 4
+TOP 4 108.26999936 18.62949792 180 N 0 28 5
+TOP 5 108.16999956 20.94199774 180 N 20 12 6
+TOP 6 108.41999906 21.8669997 180 N 29 2 7
+TOP 7 109.44500082 21.89199838 180 N 28 2 8
+TOP 8 110.02000094 21.8669997 180 N 27 2 9
+#
+# CMP 10
+CMP 4 112.640999 33.93299792 270 N C6 GCM21BR71H474KA55K ;0=1,1=0.0000,5=0
+PRP Manufacturer_Part_Number 'GCM21BR71H474KA55K'
+PRP Rated_Voltage '50V'
+PRP Value '0.47u'
+TOP 0 112.640999 32.93299738 0 N 38 39 1
+TOP 1 112.640999 34.93299846 0 N 39 27 2
+#
+# CMP 11
+CMP 4 103.496999 33.93299792 270 N C5 T58W0476M8R2C0500 ;0=1,1=0.0000,5=0
+PRP Manufacturer_Part_Number 'T58W0476M8R2C0500'
+PRP Rated_Voltage '8.2V'
+PRP Value '47u'
+TOP 0 103.496999 32.93299738 0 N 38 40 1
+TOP 1 103.496999 34.93299846 0 N 40 48 2
+#
+# CMP 12
+CMP 4 104.26699492 19.97099892 270 N C2 KAM21BR71H104JM ;0=1,1=0.0000,5=0
+PRP Manufacturer_Part_Number 'KAM21BR71H104JM'
+PRP Rated_Voltage '50V'
+PRP Value '0.1u'
+TOP 0 104.26699492 18.97099838 0 N 38 29 1
+TOP 1 104.26699492 20.97099946 0 N 20 10 2
+#
+# CMP 13
+CMP 4 106.17199492 19.97099892 270 N C1 C2012X5R1H106K125AC ;0=1,1=0.0000,5=0
+PRP Datasheet_Link 'https://product.tdk.com/info/en/catalog/datasheets/mlcc_commercial_midvoltage_en.pdf'
+PRP Geometry.Height '1.45mm'
+PRP Manufacturer_Name 'TDK'
+PRP Manufacturer_Part_Number 'C2012X5R1H106K125AC'
+PRP Mouser_Part_Number '810-C2012X5R1H106K12'
+PRP Mouser_Price/Stock 'https://www.mouser.co.uk/ProductDetail/TDK/C2012X5R1H106K125AC?qs=rSMjJ%252B1ewcQGpfDVduhUmg%3D%3D'
+PRP Rated_Voltage '50V'
+PRP Value '10u'
+TOP 0 106.17199492 18.97099838 0 N 38 30 1
+TOP 1 106.17199492 20.97099946 0 N 20 11 2
+#
