@@ -3,6 +3,7 @@
 #include "mpu6050.h"
 #include "driver/i2c.h"
 #include "imu.h"
+#include "imu_filters.h"
 
 #define I2C_MASTER_SCL_IO 6        /* SCL pin on XIAO ESP32S3 */
 #define I2C_MASTER_SDA_IO 5        /* SDA pin on XIAO ESP32S3 */
@@ -14,8 +15,15 @@ static const char *TAG = "IMU";
 static mpu6050_handle_t mpu6050 = NULL;
 
 // Latest sensor readings
-static mpu6050_acce_value_t latest_acce = {0};
-static mpu6050_gyro_value_t latest_gyro = {0};
+static mpu6050_gyro_value_t raw_gyro = {0};
+
+// Three separate FIR filters for gyro axes
+static fir_filter_t gyro_x_filter;
+static fir_filter_t gyro_y_filter;
+static fir_filter_t gyro_z_filter;
+
+// Latest filtered gyro data
+static mpu6050_gyro_value_t filtered_gyro = {0};
 
 esp_err_t imu_init(void) {
     // Configure I2C
@@ -64,65 +72,44 @@ esp_err_t imu_init(void) {
     }
 
     ESP_LOGI(TAG, "MPU6050 initialized successfully");
+
+    float default_coeffs[5] = {0.2, 0.2, 0.2, 0.2, 0.2};       // Values balanced equally
+    // float responsive_coeffs[5] = {0.05, 0.1, 0.15, 0.3, 0.4};  // Heavily weighs toward recent values
+
+    fir_filter_init(&gyro_x_filter, default_coeffs);
+    fir_filter_init(&gyro_y_filter, default_coeffs);
+    fir_filter_init(&gyro_z_filter, default_coeffs);
+
+    ESP_LOGI(TAG, "MPU6050 initialized with gyro FIR filters");
+
+
     return ESP_OK;
 }
 
 void imu_task(void *pvParameters) {
-    // mpu6050_temp_value_t temp;
     
     ESP_LOGI(TAG, "IMU task started");
     
     while (1) {
-        // Get accelerometer data
-        // esp_err_t ret = mpu6050_get_acce(mpu6050, &latest_acce);
-        // if (ret != ESP_OK) {
-        //     ESP_LOGE(TAG, "Failed to get accel data: %s", esp_err_to_name(ret));
-        // }
         
         // Get gyroscope data
-        esp_err_t ret = mpu6050_get_gyro(mpu6050, &latest_gyro);
+        esp_err_t ret = mpu6050_get_gyro(mpu6050, &raw_gyro);
         if (ret != ESP_OK) {
             ESP_LOGE(TAG, "Failed to get gyro data: %s", esp_err_to_name(ret));
         }
-        
-        // Get temperature data (optional)
-        // ret = mpu6050_get_temp(mpu6050, &temp);
-        // if (ret != ESP_OK) {
-        //     ESP_LOGE(TAG, "Failed to get temp data: %s", esp_err_to_name(ret));
-        // }
+
+        // Apply FIR filter to each axis
+        filtered_gyro.gyro_x = fir_filter_update(&gyro_x_filter, raw_gyro.gyro_x);
+        filtered_gyro.gyro_y = fir_filter_update(&gyro_y_filter, raw_gyro.gyro_y);
+        filtered_gyro.gyro_z = fir_filter_update(&gyro_z_filter, raw_gyro.gyro_z);
+
 
         // Log sensor data
-        // ESP_LOGI(TAG, "Accel: X=%.2f, Y=%.2f, Z=%.2f", 
-        //          latest_acce.acce_x, latest_acce.acce_y, latest_acce.acce_z);
-        ESP_LOGI(TAG, " ");
         ESP_LOGI(TAG, "Raw gyro: X=%.2f, Y=%.2f, Z=%.2f", 
-                 latest_gyro.gyro_x, latest_gyro.gyro_y, latest_gyro.gyro_z);
-        // ESP_LOGI(TAG, "Temperature: %.2f°C", temp.temp);
+                 raw_gyro.gyro_x, raw_gyro.gyro_y, raw_gyro.gyro_z);
+        ESP_LOGI(TAG, "FIR gyro: X=%.2f, Y=%.2f, Z=%.2f", 
+                 filtered_gyro.gyro_x, filtered_gyro.gyro_y, filtered_gyro.gyro_z);
 
-        vTaskDelay(pdMS_TO_TICKS(100));
+        vTaskDelay(pdMS_TO_TICKS(100));  // 10hz update rate
     }
 }
-
-// esp_err_t imu_get_accel(float *acce_x, float *acce_y, float *acce_z) {
-//     if (mpu6050 == NULL) {
-//         return ESP_ERR_INVALID_STATE;
-//     }
-    
-//     if (acce_x) *acce_x = latest_acce.acce_x;
-//     if (acce_y) *acce_y = latest_acce.acce_y;
-//     if (acce_z) *acce_z = latest_acce.acce_z;
-    
-//     return ESP_OK;
-// }
-
-// esp_err_t imu_get_gyro(float *gyro_x, float *gyro_y, float *gyro_z) {
-//     if (mpu6050 == NULL) {
-//         return ESP_ERR_INVALID_STATE;
-//     }
-    
-//     if (gyro_x) *gyro_x = latest_gyro.gyro_x;
-//     if (gyro_y) *gyro_y = latest_gyro.gyro_y;
-//     if (gyro_z) *gyro_z = latest_gyro.gyro_z;
-    
-//     return ESP_OK;
-// }
