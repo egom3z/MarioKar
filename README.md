@@ -18,7 +18,7 @@ Instructions to be done every session:
 3. Attach the USB device: \
 `usbipd attach --wsl --busid <busid>`
 
-4. Open the **MarioKar** repo and `ctrl+P` and type `Dev Containers: Rebuild and Reopen in Container`
+4. Open the **MarioKar** repo and `ctrl+shift+P` and type `Dev Containers: Rebuild and Reopen in Container`
 
 ### Build and Flash ESP32S3
 If the ESP-IDF extension doesn't work when building or flashing, open a terminal within VSCode and follow the instructions below. 
