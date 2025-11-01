@@ -1,3 +1,3 @@
-idf_component_register(SRCS "main.c" "led.c" "imu.c" "imu_filters.c"
+idf_component_register(SRCS "main.c" "led.c" "imu.c"
                        INCLUDE_DIRS "."
                        REQUIRES driver)

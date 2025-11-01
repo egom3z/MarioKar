@@ -16,3 +16,4 @@ dependencies:
   #   public: true
   espressif/led_strip: ^2.4.2
   espressif/mpu6050: ^1.2.0
+  espp/icm20948: ^1.0.28

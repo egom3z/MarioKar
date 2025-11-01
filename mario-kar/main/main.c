@@ -8,7 +8,7 @@
 static const char *TAG = "MAIN";
 
 void app_main(void) {
-    led_init();
+    // led_init();
     
     // Initialize IMU
     if (imu_init() == ESP_OK) {
@@ -20,5 +20,5 @@ void app_main(void) {
         ESP_LOGE(TAG, "IMU initialization failed!");
     }
     
-    xTaskCreate(led_task, "led_task", 2048, NULL, 5, NULL);
+    // xTaskCreate(led_task, "led_task", 2048, NULL, 5, NULL);
 }
