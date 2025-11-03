@@ -1,2 +1,49 @@
-.vscode/
+# Build directories
+build/
+**/build/
 mario-kar/build/
+
+# ESP-IDF specific
+sdkconfig.old
+.cache/
+
+# IDE files
+.vscode/
+.idea/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Compiled Object files
+*.o
+*.obj
+*.elf
+*.bin
+*.map
+
+# Libraries
+*.lib
+*.a
+
+# Executables
+*.exe
+*.out
+*.app
+
+# Debug files
+*.dSYM/
+*.su
+
+# Log files
+*.log
+
+# Temporary files
+*~
+*.swp
+*.swo

@@ -1,0 +1,23 @@
+{
+    "name": "stm32-dev",
+    "build": {
+      "dockerfile": "Dockerfile"
+    },
+    "workspaceFolder": "/workspace",
+    "mounts": [
+      "source=${localWorkspaceFolder},target=/workspace,type=bind"
+    ],
+    "customizations": {
+      "vscode": {
+        "extensions": [
+          "ms-vscode.cpptools",
+          "marus25.cortex-debug",
+          "ms-vscode.cmake-tools"
+        ]
+      }
+    },
+    "runArgs": [
+      "--device=/dev/bus/usb"  // Linux only; allows flashing via ST-Link
+    ]
+  }
+  
