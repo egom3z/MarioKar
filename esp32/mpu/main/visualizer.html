@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IMU Orientation Visualizer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0f172a;
+            color: #f8fafc;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+        }
+        
+        .card {
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        
+        .connection-status {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ef4444;
+        }
+        
+        .status-dot.connected {
+            background: #22c55e;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 12px;
+        }
+        
+        button {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+        
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+        
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+        
+        .btn-warning {
+            background: #f59e0b;
+            color: white;
+        }
+        
+        .btn-warning:hover {
+            background: #d97706;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+        
+        .value-display {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid #334155;
+        }
+        
+        .value-display:last-child {
+            border-bottom: none;
+        }
+        
+        .value-label {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .value-number {
+            font-size: 2rem;
+            font-family: monospace;
+        }
+        
+        .roll { color: #ef4444; }
+        .pitch { color: #22c55e; }
+        .yaw { color: #3b82f6; }
+        
+        canvas {
+            max-width: 100%;
+        }
+        
+        #cube-canvas {
+            background: #0f172a;
+            border-radius: 8px;
+        }
+        
+        .info-text {
+            color: #94a3b8;
+            font-size: 0.875rem;
+            margin-top: 12px;
+        }
+        
+        .chart-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        select {
+            background: #334155;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 IMU Orientation Visualizer</h1>
+        
+        <!-- Connection Card -->
+        <div class="card">
+            <div class="connection-status">
+                <div class="status-indicator">
+                    <div class="status-dot" id="statusDot"></div>
+                    <span id="statusText">Disconnected</span>
+                </div>
+                <div class="button-group">
+                    <button class="btn-primary" id="connectBtn">Connect Serial Port</button>
+                    <button class="btn-warning" id="clearBtn" style="display:none;">Clear Data</button>
+                    <button class="btn-danger" id="disconnectBtn" style="display:none;">Disconnect</button>
+                </div>
+            </div>
+            <p class="info-text">Click "Connect Serial Port" and select your ESP32 device. Baud rate: 115200</p>
+        </div>
+        
+        <!-- Current Values and 3D Visualization -->
+        <div class="grid">
+            <div class="card">
+                <h2 style="margin-bottom: 20px;">Current Orientation</h2>
+                <div class="value-display">
+                    <span class="value-label roll">Roll:</span>
+                    <span class="value-number roll" id="rollValue">0.00°</span>
+                </div>
+                <div class="value-display">
+                    <span class="value-label pitch">Pitch:</span>
+                    <span class="value-number pitch" id="pitchValue">0.00°</span>
+                </div>
+                <div class="value-display">
+                    <span class="value-label yaw">Yaw:</span>
+                    <span class="value-number yaw" id="yawValue">0.00°</span>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2 style="margin-bottom: 20px;">3D Orientation</h2>
+                <canvas id="cube-canvas" width="300" height="300"></canvas>
+            </div>
+        </div>
+        
+        <!-- Chart -->
+        <div class="card">
+            <div class="chart-controls">
+                <h2>Orientation Over Time</h2>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <label>History:</label>
+                    <select id="historySelect">
+                        <option value="50">50 points</option>
+                        <option value="100" selected>100 points</option>
+                        <option value="200">200 points</option>
+                        <option value="500">500 points</option>
+                    </select>
+                </div>
+            </div>
+            <canvas id="chart"></canvas>
+        </div>
+    </div>
+    
+    <script>
+        // State
+        let port = null;
+        let reader = null;
+        let keepReading = false;
+        let currentOrientation = { roll: 0, pitch: 0, yaw: 0 };
+        let maxDataPoints = 100;
+        
+        // Chart setup
+        const ctx = document.getElementById('chart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [
+                    {
+                        label: 'Roll',
+                        data: [],
+                        borderColor: '#ef4444',
+                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                        tension: 0.4,
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'Pitch',
+                        data: [],
+                        borderColor: '#22c55e',
+                        backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                        tension: 0.4,
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'Yaw',
+                        data: [],
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        tension: 0.4,
+                        pointRadius: 0
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                aspectRatio: 2.5,
+                scales: {
+                    y: {
+                        min: -180,
+                        max: 180,
+                        grid: { color: '#334155' },
+                        ticks: { color: '#94a3b8' }
+                    },
+                    x: {
+                        grid: { color: '#334155' },
+                        ticks: { color: '#94a3b8', maxTicksLimit: 10 }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: { color: '#f8fafc' }
+                    }
+                }
+            }
+        });
+        
+        // 3D Cube rendering
+        const cubeCanvas = document.getElementById('cube-canvas');
+        const cubeCtx = cubeCanvas.getContext('2d');
+        
+        function drawCube() {
+            const { roll, pitch, yaw } = currentOrientation;
+            
+            const rollRad = (roll * Math.PI) / 180;
+            const pitchRad = (pitch * Math.PI) / 180;
+            const yawRad = (yaw * Math.PI) / 180;
+            
+            const size = 60;
+            const cx = 150;
+            const cy = 150;
+            
+            function rotateX(x, y, z) {
+                const cos = Math.cos(rollRad);
+                const sin = Math.sin(rollRad);
+                return [x, y * cos - z * sin, y * sin + z * cos];
+            }
+            
+            function rotateY(x, y, z) {
+                const cos = Math.cos(pitchRad);
+                const sin = Math.sin(pitchRad);
+                return [x * cos + z * sin, y, -x * sin + z * cos];
+            }
+            
+            function rotateZ(x, y, z) {
+                const cos = Math.cos(yawRad);
+                const sin = Math.sin(yawRad);
+                return [x * cos - y * sin, x * sin + y * cos, z];
+            }
+            
+            function project(x, y, z) {
+                let [rx, ry, rz] = rotateX(x, y, z);
+                [rx, ry, rz] = rotateY(rx, ry, rz);
+                [rx, ry, rz] = rotateZ(rx, ry, rz);
+                
+                const scale = 200 / (200 + rz);
+                return [cx + rx * scale, cy + ry * scale, rz];
+            }
+            
+            const vertices = [
+                [-size, -size, -size], [size, -size, -size],
+                [size, size, -size], [-size, size, -size],
+                [-size, -size, size], [size, -size, size],
+                [size, size, size], [-size, size, size]
+            ];
+            
+            const projected = vertices.map(v => project(...v));
+            
+            const edges = [
+                [0,1],[1,2],[2,3],[3,0],
+                [4,5],[5,6],[6,7],[7,4],
+                [0,4],[1,5],[2,6],[3,7]
+            ];
+            
+            cubeCtx.fillStyle = '#0f172a';
+            cubeCtx.fillRect(0, 0, 300, 300);
+            
+            edges.forEach(([start, end], i) => {
+                const z1 = projected[start][2];
+                const z2 = projected[end][2];
+                const avgZ = (z1 + z2) / 2;
+                const opacity = 0.3 + (avgZ + size) / (size * 4);
+                
+                cubeCtx.beginPath();
+                cubeCtx.moveTo(projected[start][0], projected[start][1]);
+                cubeCtx.lineTo(projected[end][0], projected[end][1]);
+                cubeCtx.strokeStyle = i < 4 ? `rgba(239, 68, 68, ${opacity})` :
+                                      i < 8 ? `rgba(34, 197, 94, ${opacity})` :
+                                              `rgba(59, 130, 246, ${opacity})`;
+                cubeCtx.lineWidth = 2;
+                cubeCtx.stroke();
+            });
+            
+            projected.forEach((point, i) => {
+                const opacity = 0.5 + (point[2] + size) / (size * 4);
+                cubeCtx.beginPath();
+                cubeCtx.arc(point[0], point[1], 4, 0, Math.PI * 2);
+                cubeCtx.fillStyle = i < 4 ? `rgba(239, 68, 68, ${opacity})` :
+                                            `rgba(34, 197, 94, ${opacity})`;
+                cubeCtx.fill();
+            });
+        }
+        
+        function updateDisplay() {
+            document.getElementById('rollValue').textContent = currentOrientation.roll.toFixed(2) + '°';
+            document.getElementById('pitchValue').textContent = currentOrientation.pitch.toFixed(2) + '°';
+            document.getElementById('yawValue').textContent = currentOrientation.yaw.toFixed(2) + '°';
+            drawCube();
+        }
+        
+        function addDataPoint(roll, pitch, yaw) {
+            const time = chart.data.labels.length;
+            chart.data.labels.push(time);
+            chart.data.datasets[0].data.push(roll);
+            chart.data.datasets[1].data.push(pitch);
+            chart.data.datasets[2].data.push(yaw);
+            
+            if (chart.data.labels.length > maxDataPoints) {
+                chart.data.labels.shift();
+                chart.data.datasets.forEach(dataset => dataset.data.shift());
+            }
+            
+            chart.update('none');
+        }
+        
+        async function connectSerial() {
+            try {
+                port = await navigator.serial.requestPort();
+                await port.open({ baudRate: 115200 });
+                
+                document.getElementById('statusDot').classList.add('connected');
+                document.getElementById('statusText').textContent = 'Connected';
+                document.getElementById('connectBtn').style.display = 'none';
+                document.getElementById('clearBtn').style.display = 'inline-block';
+                document.getElementById('disconnectBtn').style.display = 'inline-block';
+                
+                startReading();
+            } catch (error) {
+                alert('Failed to connect: ' + error.message);
+            }
+        }
+        
+        async function startReading() {
+            keepReading = true;
+            const textDecoder = new TextDecoderStream();
+            const readableStreamClosed = port.readable.pipeTo(textDecoder.writable);
+            reader = textDecoder.readable.getReader();
+            
+            let buffer = '';
+            try {
+                while (keepReading) {
+                    const { value, done } = await reader.read();
+                    if (done) break;
+                    
+                    buffer += value;
+                    const lines = buffer.split('\n');
+                    buffer = lines.pop();
+                    
+                    for (const line of lines) {
+                        const rollMatch = line.match(/Roll:\s*([-\d.]+)/);
+                        const pitchMatch = line.match(/Pitch:\s*([-\d.]+)/);
+                        const yawMatch = line.match(/Yaw:\s*([-\d.]+)/);
+                        
+                        if (rollMatch && pitchMatch && yawMatch) {
+                            currentOrientation.roll = parseFloat(rollMatch[1]);
+                            currentOrientation.pitch = parseFloat(pitchMatch[1]);
+                            currentOrientation.yaw = parseFloat(yawMatch[1]);
+                            
+                            updateDisplay();
+                            addDataPoint(currentOrientation.roll, currentOrientation.pitch, currentOrientation.yaw);
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Reading error:', error);
+            }
+        }
+        
+        async function disconnect() {
+            keepReading = false;
+            if (reader) {
+                await reader.cancel();
+                reader = null;
+            }
+            if (port) {
+                await port.close();
+                port = null;
+            }
+            
+            document.getElementById('statusDot').classList.remove('connected');
+            document.getElementById('statusText').textContent = 'Disconnected';
+            document.getElementById('connectBtn').style.display = 'inline-block';
+            document.getElementById('clearBtn').style.display = 'none';
+            document.getElementById('disconnectBtn').style.display = 'none';
+        }
+        
+        function clearData() {
+            chart.data.labels = [];
+            chart.data.datasets.forEach(dataset => dataset.data = []);
+            chart.update();
+        }
+        
+        // Event listeners
+        document.getElementById('connectBtn').addEventListener('click', connectSerial);
+        document.getElementById('disconnectBtn').addEventListener('click', disconnect);
+        document.getElementById('clearBtn').addEventListener('click', clearData);
+        document.getElementById('historySelect').addEventListener('change', (e) => {
+            maxDataPoints = parseInt(e.target.value);
+        });
+        
+        // Initial render
+        drawCube();
+        
+        // Animation loop for smooth cube rendering
+        setInterval(() => {
+            if (keepReading) {
+                drawCube();
+            }
+        }, 50);
+    </script>
+</body>
+</html>
