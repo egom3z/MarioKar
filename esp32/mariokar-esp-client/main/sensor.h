@@ -5,6 +5,13 @@
 #include <stdbool.h>
 
 /**
+ * @brief Dual IMU operation - both sensors active simultaneously
+ * ICM-20948: SPI on GPIO 7,8,9,44
+ * MPU-6050:  I2C on GPIO 5,6
+ */
+#define DUAL_IMU_MODE       1  // Enable both sensors at once
+
+/**
  * @brief IMU sensor data structure
  */
 typedef struct {
@@ -14,7 +21,7 @@ typedef struct {
     float gyro_x;   // Angular velocity in deg/s
     float gyro_y;
     float gyro_z;
-    float mag_x;    // Magnetic field in uT
+    float mag_x;    // Magnetic field in uT (only valid for ICM20948)
     float mag_y;
     float mag_z;
     bool mag_valid; // Magnetometer data ready flag
@@ -29,52 +36,24 @@ typedef struct {
     float yaw;      // degrees (heading)
 } imu_orientation_t;
 
-/**
- * @brief Initialize the ICM-20948 IMU
- * 
- * Sets up SPI communication, configures accelerometer, gyroscope,
- * and magnetometer for continuous operation.
- * 
- * @return ESP_OK on success, error code otherwise
- */
-esp_err_t imu_init(void);
+// =============================================================================
+// ICM-20948 Functions (SPI)
+// =============================================================================
 
-/**
- * @brief Read raw sensor data from IMU
- * 
- * @param data Pointer to structure to store sensor readings
- * @return ESP_OK on success, error code otherwise
- */
-esp_err_t imu_read_sensors(imu_data_t *data);
+esp_err_t icm20948_init(void);
+esp_err_t icm20948_read_sensors(imu_data_t *data);
+void icm20948_get_orientation(imu_orientation_t *orientation);
+void icm20948_update_fusion(const imu_data_t *data, float dt);
+esp_err_t icm20948_calibrate_gyro(int samples);
 
-/**
- * @brief Get current orientation from sensor fusion
- * 
- * @param orientation Pointer to structure to store orientation
- */
-void imu_get_orientation(imu_orientation_t *orientation);
+// =============================================================================
+// MPU-6050 Functions (I2C)
+// =============================================================================
 
-/**
- * @brief Update sensor fusion filter with new IMU data
- * 
- * @param data IMU sensor data
- * @param dt Time delta in seconds since last update
- */
-void imu_update_fusion(const imu_data_t *data, float dt);
-
-/**
- * @brief Calibrate gyroscope bias (device must be stationary)
- * 
- * @param samples Number of samples to average (recommend 1000+)
- * @return ESP_OK on success
- */
-esp_err_t imu_calibrate_gyro(int samples);
-
-/**
- * @brief Main IMU task - handles continuous sensor reading and fusion
- * 
- * @param pvParameters FreeRTOS task parameters (unused)
- */
-void imu_task(void *pvParameters);
+esp_err_t mpu6050_imu_init(void);
+esp_err_t mpu6050_read_sensors(imu_data_t *data);
+void mpu6050_get_orientation(imu_orientation_t *orientation);
+void mpu6050_update_fusion(const imu_data_t *data, float dt);
+esp_err_t mpu6050_calibrate_gyro(int samples);
 
 #endif // SENSOR_H

@@ -15,7 +15,6 @@ dependencies:
     version: 6.0.0
 direct_dependencies:
 - espressif/mpu6050
-- idf
-manifest_hash: 189256776d4bcc605ac77419ec80c5b10764f066131d9cb5fbe5e30e9554aefa
+manifest_hash: 934c35034de52991fa809729eb446a27010796d9d6df0d1617a478ed5e50104d
 target: esp32s3
 version: 2.0.0

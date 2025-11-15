@@ -7,9 +7,13 @@
  * - I2C master mode for AK09916 magnetometer
  * - Madgwick AHRS sensor fusion
  * - Gyroscope calibration
+ * 
+ * Note: This file only compiles when IMU_SENSOR_TYPE == IMU_TYPE_ICM20948
  */
 
 #include "sensor.h"
+
+#if IMU_SENSOR_TYPE == IMU_TYPE_ICM20948
 #include "driver/spi_master.h"
 #include "driver/gpio.h"
 #include "esp_log.h"
@@ -389,7 +393,7 @@ static void madgwick_update_imu(float gx, float gy, float gz,
 // Public API Implementation
 // =============================================================================
 
-esp_err_t imu_init(void)
+esp_err_t icm20948_init(void)
 {
     esp_err_t ret;
 
@@ -511,7 +515,7 @@ esp_err_t imu_init(void)
     return ESP_OK;
 }
 
-esp_err_t imu_read_sensors(imu_data_t *data)
+esp_err_t icm20948_read_sensors(imu_data_t *data)
 {
     if (!data) {
         return ESP_ERR_INVALID_ARG;
@@ -569,7 +573,7 @@ esp_err_t imu_read_sensors(imu_data_t *data)
     return ESP_OK;
 }
 
-void imu_update_fusion(const imu_data_t *data, float dt)
+void icm20948_update_fusion(const imu_data_t *data, float dt)
 {
     if (!data) return;
 
@@ -581,7 +585,7 @@ void imu_update_fusion(const imu_data_t *data, float dt)
     );
 }
 
-void imu_get_orientation(imu_orientation_t *orientation)
+void icm20948_get_orientation(imu_orientation_t *orientation)
 {
     if (!orientation) return;
 
@@ -630,7 +634,7 @@ static inline int angle_to_servo_pwm(float angle)
     return pwm;
 }
 
-esp_err_t imu_calibrate_gyro(int samples)
+esp_err_t icm20948_calibrate_gyro(int samples)
 {
     if (samples < 100) {
         ESP_LOGW(TAG, "Calibration samples too low, using 100");
@@ -680,7 +684,7 @@ void imu_task(void *pvParameters)
     ESP_LOGI(TAG, "IMU task started");
 
     // Calibrate gyroscope
-    imu_calibrate_gyro(1000);
+    icm20948_calibrate_gyro(1000);
 
     ESP_LOGI(TAG, "Starting sensor fusion loop at 100 Hz");
 
@@ -696,12 +700,12 @@ void imu_task(void *pvParameters)
         }
 
         // Read sensors
-        if (imu_read_sensors(&sensor_data) == ESP_OK) {
+        if (icm20948_read_sensors(&sensor_data) == ESP_OK) {
             // Update sensor fusion (6-axis: accel + gyro only)
-            imu_update_fusion(&sensor_data, dt);
+            icm20948_update_fusion(&sensor_data, dt);
 
             // Get orientation
-            imu_get_orientation(&orientation);
+            icm20948_get_orientation(&orientation);
 
             // Minimal logging (disabled for BLE client - main.c handles logging)
             (void)loop_count;  // Suppress unused variable warning
@@ -710,3 +714,5 @@ void imu_task(void *pvParameters)
         vTaskDelay(pdMS_TO_TICKS(10));  // 100 Hz
     }
 }
+
+#endif // IMU_SENSOR_TYPE == IMU_TYPE_ICM20948

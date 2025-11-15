@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>  // malloc/free
+#include <math.h>    // logf
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "nvs_flash.h"
@@ -20,10 +21,16 @@
 #include "esp_gap_ble_api.h"
 #include "esp_gattc_api.h"
 #include "esp_gatt_common_api.h"
+#include "nvs.h"
 #include "esp_log.h"
 #include "esp_timer.h"
 #include "driver/usb_serial_jtag.h"
+#include "driver/gpio.h"
 #include "sensor.h"
+
+// GPIO configuration for reverse button
+#define GPIO_REVERSE_BUTTON    GPIO_NUM_1
+#define GPIO_INPUT_PIN_SEL     (1ULL << GPIO_REVERSE_BUTTON)
 
 #define GATTC_TAG "GATTC_CLEAN"
 #define PROFILE_NUM        1
@@ -354,14 +361,137 @@ static void esp_gattc_cb(esp_gattc_cb_event_t event, esp_gatt_if_t gattc_if,
         gattc_profile_event_handler(event, gattc_if, param);
 }
 
-// Shared state between IMU reader and BLE TX
-static volatile uint16_t s_latest_pwm = 1500;  // Center position (0 degrees)
-static volatile bool s_imu_ready = false;
+// Shared state between dual IMU readers and BLE TX
+typedef struct {
+    uint16_t icm_roll;   // ICM-20948 roll PWM (1500-1650 µs, inverted: 0°=1650, 90°=1500)
+    uint16_t icm_pitch;  // ICM-20948 pitch PWM (1500-1650 µs, inverted: 0°=1650, 90°=1500)
+    uint16_t mpu_roll;   // MPU-6050 roll PWM (1000-2000 µs range)
+    uint16_t mpu_pitch;  // MPU-6050 pitch PWM (1000-2000 µs range)
+} dual_imu_pwm_t;
+
+static volatile dual_imu_pwm_t s_latest_pwm = {1580, 1580, 1500, 1500}; // ICM center=1650 (0°), MPU center=1500
+static volatile bool s_icm_ready = false;
+static volatile bool s_mpu_ready = false;
+
+// Reverse flag controlled by GPIO button
+static volatile bool s_reverse_mode = false;
+static volatile uint32_t s_reverse_toggle_count = 0;  // Counter for button presses
 
 /**
- * @brief Map angle (-90 to +90 degrees) to servo PWM (1000 to 2000 microseconds)
+ * @brief Persist reverse flag to NVS
  */
-static inline uint16_t angle_to_servo_pwm(float angle) {
+static void reverse_state_save(bool value)
+{
+    nvs_handle_t nvs;
+    esp_err_t err = nvs_open("app", NVS_READWRITE, &nvs);
+    if (err == ESP_OK) {
+        uint8_t v = value ? 1 : 0;
+        nvs_set_u8(nvs, "reverse", v);
+        nvs_commit(nvs);
+        nvs_close(nvs);
+        ESP_LOGI(GATTC_TAG, "Reverse state saved: %s", value ? "ON" : "OFF");
+    } else {
+        ESP_LOGW(GATTC_TAG, "NVS open failed for save: %s", esp_err_to_name(err));
+    }
+}
+
+/**
+ * @brief Load reverse flag from NVS (defaults to OFF if not present)
+ */
+static void reverse_state_load(void)
+{
+    nvs_handle_t nvs;
+    esp_err_t err = nvs_open("app", NVS_READONLY, &nvs);
+    if (err == ESP_OK) {
+        uint8_t v = 0;
+        err = nvs_get_u8(nvs, "reverse", &v);
+        nvs_close(nvs);
+        if (err == ESP_OK) {
+            s_reverse_mode = (v != 0);
+            ESP_LOGI(GATTC_TAG, "Reverse state loaded: %s", s_reverse_mode ? "ON" : "OFF");
+        } else if (err == ESP_ERR_NVS_NOT_FOUND) {
+            ESP_LOGI(GATTC_TAG, "Reverse state not found in NVS, defaulting to OFF");
+            s_reverse_mode = false;
+        } else {
+            ESP_LOGW(GATTC_TAG, "NVS get failed: %s", esp_err_to_name(err));
+        }
+    } else {
+        ESP_LOGW(GATTC_TAG, "NVS open failed for load: %s", esp_err_to_name(err));
+    }
+}
+
+/**
+ * @brief GPIO interrupt handler for reverse button
+ */
+static void IRAM_ATTR gpio_isr_handler(void* arg) {
+    static TickType_t last_tick = 0;
+    TickType_t now = xTaskGetTickCountFromISR();
+
+    // Simple debounce: ignore presses within 200ms of last press
+    if ((now - last_tick) > pdMS_TO_TICKS(1000)) {
+        s_reverse_mode = !s_reverse_mode;
+        s_reverse_toggle_count++;  // Increment counter so we can detect changes
+        last_tick = now;
+    }
+}
+
+/**
+ * @brief Initialize GPIO button for reverse control
+ */
+static void init_reverse_button(void) {
+    gpio_config_t io_conf = {
+        .intr_type = GPIO_INTR_ANYEDGE,        // Interrupt on any edge (debug visibility)
+        .mode = GPIO_MODE_INPUT,                // Set as input
+        .pin_bit_mask = GPIO_INPUT_PIN_SEL,    // Bit mask of pin
+        .pull_up_en = GPIO_PULLUP_ENABLE,      // Enable pull-up (button to GND)
+        .pull_down_en = GPIO_PULLDOWN_DISABLE  // Disable pull-down
+    };
+    
+    gpio_config(&io_conf);
+    
+    // Install GPIO ISR service
+    gpio_install_isr_service(ESP_INTR_FLAG_IRAM);
+    
+    // Hook ISR handler for specific GPIO pin
+    gpio_isr_handler_add(GPIO_REVERSE_BUTTON, gpio_isr_handler, NULL);
+    
+    ESP_LOGI(GATTC_TAG, "Reverse button initialized on GPIO%d", GPIO_REVERSE_BUTTON);
+}
+
+/**
+ * @brief Task to monitor reverse button state changes
+ */
+static void reverse_monitor_task(void *arg) {
+    uint32_t last_count = 0;
+    int last_level = -1;
+    
+    while (1) {
+        uint32_t current_count = s_reverse_toggle_count;
+        int level = gpio_get_level(GPIO_REVERSE_BUTTON);
+        
+        // Print raw GPIO level on change (helps wiring/pull debug)
+        if (level != last_level) {
+            ESP_LOGI(GATTC_TAG, "GPIO%d level changed: %d", GPIO_REVERSE_BUTTON, level);
+            last_level = level;
+        }
+
+        // Check if button was pressed (count changed)
+        if (current_count != last_count) {
+            ESP_LOGI(GATTC_TAG, "REVERSE BUTTON PRESSED! Mode: %s (Press #%lu)",
+                     s_reverse_mode ? "ON" : "OFF", (unsigned long)current_count);
+            // Persist new state
+            reverse_state_save(s_reverse_mode);
+            last_count = current_count;
+        }
+        
+        vTaskDelay(pdMS_TO_TICKS(50));  // Check every 50ms
+    }
+}
+
+/**
+ * @brief Map angle to servo PWM (1000 to 2000 microseconds) - MPU-6050
+ */
+static inline uint16_t angle_to_servo_pwm_full(float angle) {
     // Clamp angle to -90 to +90 range
     if (angle < -90.0f) angle = -90.0f;
     if (angle > 90.0f) angle = 90.0f;
@@ -372,50 +502,75 @@ static inline uint16_t angle_to_servo_pwm(float angle) {
     return pwm;
 }
 
-/* IMU reader: read sensor data and convert to servo PWM */
-static void imu_reader_task(void *arg) {
+/**
+ * @brief Map angle to servo PWM (ICM-20948, half span, mode-dependent)
+ * - Normal: 0° -> 1610µs, 90° -> 1560µs (decreasing)
+ * - Reverse: 0° -> 1200µs, 90° -> 1350µs (increasing)
+ */
+static inline uint16_t angle_to_servo_pwm_half(float angle) {
+    // Clamp to 0-90° range (ignore negative angles)
+    if (angle < 0.0f) {
+        angle = 0.0f;
+    }
+    if (angle > 90.0f) {
+        angle = 90.0f;
+    }
+    
+    if (s_reverse_mode) {
+        // Reverse mode: 0° -> 1350µs, 90° -> 1460µs
+        float y = 1450.0f - 19.952f * logf(91.0f - angle);
+        if (y > 1450.f) y = 1450.f;
+
+        return (uint16_t) y;
+    } else {
+        // Normal mode (log curve): y = 1520 + 13.3013 * ln(91 - x), clamp to max 1580
+        // x = angle in degrees [0,90]
+        float y = 1550.0f + 11.0844 * logf(91.0f - angle);
+        if (y > 1600.0f) y = 1600.0f;
+        // Guard against minor float underflow
+        return (uint16_t)y;
+    }
+}
+
+/* ICM-20948 reader task (SPI) */
+static void icm20948_reader_task(void *arg) {
     imu_data_t sensor_data;
     imu_orientation_t orientation;
     uint64_t last_time = esp_timer_get_time();
 
-    ESP_LOGI(GATTC_TAG, "Initializing IMU...");
+    ESP_LOGI(GATTC_TAG, "Initializing ICM-20948 (SPI)...");
     
-    if (imu_init() != ESP_OK) {
-        ESP_LOGE(GATTC_TAG, "IMU initialization failed!");
+    if (icm20948_init() != ESP_OK) {
+        ESP_LOGE(GATTC_TAG, "ICM-20948 initialization failed!");
         vTaskDelete(NULL);
         return;
     }
     
-    ESP_LOGI(GATTC_TAG, "IMU initialized, calibrating gyroscope...");
-    imu_calibrate_gyro(1000);
+    ESP_LOGI(GATTC_TAG, "ICM-20948 initialized, calibrating gyroscope...");
+    icm20948_calibrate_gyro(1000);
     
-    s_imu_ready = true;
-    ESP_LOGI(GATTC_TAG, "IMU ready, starting orientation tracking");
+    s_icm_ready = true;
+    ESP_LOGI(GATTC_TAG, "ICM-20948 ready");
     
     while (1) {
-        // Calculate time delta
         uint64_t current_time = esp_timer_get_time();
         float dt = (current_time - last_time) / 1000000.0f;
         last_time = current_time;
         
-        // Clamp dt to reasonable range
-        if (dt <= 0.0f || dt > 0.1f) {
-            dt = 0.01f;
-        }
+        if (dt <= 0.0f || dt > 0.1f) dt = 0.01f;
         
-        // Read sensors and update fusion
-        if (imu_read_sensors(&sensor_data) == ESP_OK) {
-            imu_update_fusion(&sensor_data, dt);
-            imu_get_orientation(&orientation);
+        if (icm20948_read_sensors(&sensor_data) == ESP_OK) {
+            icm20948_update_fusion(&sensor_data, dt);
+            icm20948_get_orientation(&orientation);
             
-            // Use ROLL for steering control (you can change to pitch or yaw if needed)
-            s_latest_pwm = angle_to_servo_pwm(orientation.roll);
+            s_latest_pwm.icm_roll = angle_to_servo_pwm_half(orientation.roll);
+            s_latest_pwm.icm_pitch = angle_to_servo_pwm_half(orientation.pitch);
             
-            // Log every second
             static int log_counter = 0;
             if (++log_counter >= 100) {
-                ESP_LOGI(GATTC_TAG, "IMU: Roll=%.1f° -> PWM=%d µs", 
-                         orientation.roll, s_latest_pwm);
+                ESP_LOGI(GATTC_TAG, "ICM: Roll=%.1f° (PWM=%d) Pitch=%.1f° (PWM=%d)", 
+                         orientation.roll, s_latest_pwm.icm_roll,
+                         orientation.pitch, s_latest_pwm.icm_pitch);
                 log_counter = 0;
             }
         }
@@ -424,44 +579,105 @@ static void imu_reader_task(void *arg) {
     }
 }
 
-/* BLE TX task: periodically send PWM value (1000-2000) as 2 bytes */
-static void ble_tx_task(void *arg) {
-    uint16_t last_tx = 0xFFFF; // sentinel to log on first send
-    ESP_LOGI(GATTC_TAG, "BLE TX task started (interval %d ms)", BLE_TX_INTERVAL_MS);
+/* MPU-6050 reader task (I2C) */
+static void mpu6050_reader_task(void *arg) {
+    imu_data_t sensor_data;
+    imu_orientation_t orientation;
+    uint64_t last_time = esp_timer_get_time();
+
+    ESP_LOGI(GATTC_TAG, "Initializing MPU-6050 (I2C)...");
+    
+    if (mpu6050_imu_init() != ESP_OK) {
+        ESP_LOGE(GATTC_TAG, "MPU-6050 initialization failed!");
+        vTaskDelete(NULL);
+        return;
+    }
+    
+    ESP_LOGI(GATTC_TAG, "MPU-6050 initialized, calibrating gyroscope...");
+    mpu6050_calibrate_gyro(1000);
+    
+    s_mpu_ready = true;
+    ESP_LOGI(GATTC_TAG, "MPU-6050 ready");
     
     while (1) {
-        // Wait for IMU to be ready
-        if (!s_imu_ready) {
+        uint64_t current_time = esp_timer_get_time();
+        float dt = (current_time - last_time) / 1000000.0f;
+        last_time = current_time;
+        
+        if (dt <= 0.0f || dt > 0.1f) dt = 0.01f;
+        
+        if (mpu6050_read_sensors(&sensor_data) == ESP_OK) {
+            mpu6050_update_fusion(&sensor_data, dt);
+            mpu6050_get_orientation(&orientation);
+            
+            s_latest_pwm.mpu_roll = angle_to_servo_pwm_full(orientation.roll);
+            s_latest_pwm.mpu_pitch = angle_to_servo_pwm_full(orientation.pitch);
+            
+            static int log_counter = 0;
+            if (++log_counter >= 100) {
+                // ESP_LOGI(GATTC_TAG, "MPU: Roll=%.1f° (PWM=%d) Pitch=%.1f° (PWM=%d)", 
+                //          orientation.roll, s_latest_pwm.mpu_roll,
+                //          orientation.pitch, s_latest_pwm.mpu_pitch);
+                log_counter = 0;
+            }
+        }
+        
+        vTaskDelay(pdMS_TO_TICKS(10));  // 100 Hz
+    }
+}
+
+/* BLE TX task: send 4 PWM values (8 bytes total) */
+static void ble_tx_task(void *arg) {
+    ESP_LOGI(GATTC_TAG, "BLE TX task started (interval %d ms, dual IMU mode)", BLE_TX_INTERVAL_MS);
+    
+    while (1) {
+        // Wait for both IMUs to be ready
+        if (!s_icm_ready || !s_mpu_ready) {
             vTaskDelay(pdMS_TO_TICKS(100));
             continue;
         }
         
-        uint16_t pwm_to_send = s_latest_pwm;
+        // Copy current PWM values (atomic read)
+        dual_imu_pwm_t pwm_data = s_latest_pwm;
 
         if (is_connected &&
             gl_profile_tab[PROFILE_APP_ID].led_handle != INVALID_HANDLE &&
             gl_profile_tab[PROFILE_APP_ID].gattc_if != ESP_GATT_IF_NONE) {
             
-            // Send PWM as 2 bytes (little-endian: LSB first, MSB second)
-            uint8_t pwm_bytes[2];
-            pwm_bytes[0] = (uint8_t)(pwm_to_send & 0xFF);         // LSB
-            pwm_bytes[1] = (uint8_t)((pwm_to_send >> 8) & 0xFF);  // MSB
+            // Pack 4 PWM values as 8 bytes (little-endian)
+            // Format: [ICM_ROLL_LSB, ICM_ROLL_MSB, ICM_PITCH_LSB, ICM_PITCH_MSB, 
+            //          MPU_ROLL_LSB, MPU_ROLL_MSB, MPU_PITCH_LSB, MPU_PITCH_MSB]
+            uint8_t pwm_bytes[8];
+            pwm_bytes[0] = (uint8_t)(pwm_data.icm_roll & 0xFF);
+            pwm_bytes[1] = (uint8_t)((pwm_data.icm_roll >> 8) & 0xFF);
+            pwm_bytes[2] = (uint8_t)(pwm_data.icm_pitch & 0xFF);
+            pwm_bytes[3] = (uint8_t)((pwm_data.icm_pitch >> 8) & 0xFF);
+            pwm_bytes[4] = (uint8_t)(pwm_data.mpu_roll & 0xFF);
+            pwm_bytes[5] = (uint8_t)((pwm_data.mpu_roll >> 8) & 0xFF);
+            pwm_bytes[6] = (uint8_t)(pwm_data.mpu_pitch & 0xFF);
+            pwm_bytes[7] = (uint8_t)((pwm_data.mpu_pitch >> 8) & 0xFF);
             
             esp_err_t err = esp_ble_gattc_write_char(
                 gl_profile_tab[PROFILE_APP_ID].gattc_if,
                 gl_profile_tab[PROFILE_APP_ID].conn_id,
                 gl_profile_tab[PROFILE_APP_ID].led_handle,
-                2,  // 2 bytes
+                8,  // 8 bytes
                 pwm_bytes,
                 ESP_GATT_WRITE_TYPE_NO_RSP,
                 ESP_GATT_AUTH_REQ_NONE);
             
             if (err != ESP_OK) {
                 ESP_LOGW(GATTC_TAG, "BLE TX write failed: %s", esp_err_to_name(err));
-            } else if (pwm_to_send != last_tx) {
-                ESP_LOGI(GATTC_TAG, "BLE TX: PWM=%d µs [0x%02X 0x%02X]", 
-                         pwm_to_send, pwm_bytes[0], pwm_bytes[1]);
-                last_tx = pwm_to_send;
+            } else {
+                // Log every 20 transmissions (~1 second)
+                static int log_counter = 0;
+                if (++log_counter >= 20) {
+                    ESP_LOGI(GATTC_TAG, "BLE TX: ICM[R=%d P=%d] MPU[R=%d P=%d] µs | REVERSE: %s", 
+                             pwm_data.icm_roll, pwm_data.icm_pitch,
+                             pwm_data.mpu_roll, pwm_data.mpu_pitch,
+                             s_reverse_mode ? "ON" : "OFF");
+                    log_counter = 0;
+                }
             }
         }
 
@@ -477,9 +693,17 @@ void app_main(void) {
         nvs_flash_init();
     }
 
-    // Start IMU reader and BLE TX tasks
-    xTaskCreate(imu_reader_task, "imu_reader", 4096, NULL, 5, NULL);
+    // Load persisted reverse state
+    reverse_state_load();
+
+    // Initialize reverse button on GPIO1
+    init_reverse_button();
+
+    // Start dual IMU reader tasks, BLE TX task, and reverse monitor
+    xTaskCreate(icm20948_reader_task, "icm20948", 4096, NULL, 5, NULL);
+    xTaskCreate(mpu6050_reader_task, "mpu6050", 4096, NULL, 5, NULL);
     xTaskCreate(ble_tx_task, "ble_tx", 3072, NULL, 6, NULL);
+    xTaskCreate(reverse_monitor_task, "reverse_mon", 4096, NULL, 4, NULL);
 
     esp_bt_controller_mem_release(ESP_BT_MODE_CLASSIC_BT);
     esp_bt_controller_config_t bt_cfg = BT_CONTROLLER_INIT_CONFIG_DEFAULT();

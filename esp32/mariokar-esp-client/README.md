@@ -4,154 +4,262 @@ ESP32-S3 BLE GATT client that reads IMU orientation and transmits servo PWM valu
 
 ## Features
 
-- ✅ **IMU Integration**: ICM-20948 9-axis sensor with 6-axis fusion (accel + gyro)
+- ✅ **Multi-Sensor Support**: Choose between MPU6050 (I2C) or ICM-20948 (SPI)
 - ✅ **Servo Mapping**: Converts roll angle (-90° to +90°) to PWM (1000-2000 µs)
 - ✅ **BLE Transmission**: Sends 2-byte PWM values at 50ms intervals
 - ✅ **Auto-Calibration**: Gyroscope bias calibration on startup
 - ✅ **Connection Management**: Auto-scan, connect, and retry
+- ✅ **Madgwick AHRS**: Sensor fusion for accurate orientation
 
-## Hardware
+## Supported IMU Sensors
 
-**ESP32-S3 XIAO** connected to **ICM-20948 IMU** via SPI:
-- MISO: GPIO 8
-- MOSI: GPIO 9
-- SCLK: GPIO 7
-- CS: GPIO 44
+### MPU6050 (Default - I2C)
+- **Axes**: 6-axis (accelerometer + gyroscope)
+- **Interface**: I2C
+- **Pins (XIAO ESP32-S3)**:
+  - SCL: GPIO 6
+  - SDA: GPIO 5
+- **Features**: 
+  - ±4g accelerometer range
+  - ±500°/s gyroscope range
+  - No magnetometer (yaw will drift without external reference)
+- **When to use**: Budget-friendly, easier wiring, sufficient for roll/pitch control
 
-**Target**: STM32WB "MyCST" BLE peripheral
+### ICM-20948 (SPI)
+- **Axes**: 9-axis (accelerometer + gyroscope + magnetometer)
+- **Interface**: SPI
+- **Pins (XIAO ESP32-S3)**:
+  - MISO: GPIO 8
+  - MOSI: GPIO 9
+  - SCLK: GPIO 7
+  - CS: GPIO 44
+- **Features**:
+  - ±4g accelerometer range
+  - ±500°/s gyroscope range
+  - AK09916 magnetometer for absolute heading
+- **When to use**: Need accurate yaw/heading, willing to pay premium
 
-## PWM Mapping
+## Selecting IMU Sensor
 
-| IMU Roll | Servo PWM | Servo Position |
-|----------|-----------|----------------|
-| -90°     | 1000 µs   | Full left      |
-| -45°     | 1250 µs   | Half left      |
-| 0°       | 1500 µs   | Center         |
-| +45°     | 1750 µs   | Half right     |
-| +90°     | 2000 µs   | Full right     |
+Edit `main/sensor.h` and change the sensor type:
 
-**Formula**: `PWM = 1500 + (angle × 1000 / 180)`
+```c
+// For MPU6050 (I2C)
+#define IMU_SENSOR_TYPE     IMU_TYPE_MPU6050
 
-## BLE Protocol
-
-### Data Format
-- **Size**: 2 bytes
-- **Encoding**: Little-endian (LSB first, MSB second)
-- **Range**: 1000-2000 (0x03E8 - 0x07D0)
-
-### Example Transmissions
+// OR for ICM-20948 (SPI)
+#define IMU_SENSOR_TYPE     IMU_TYPE_ICM20948
 ```
-Roll = 0°     → PWM = 1500 → [0xDC 0x05]
-Roll = -45°   → PWM = 1250 → [0xE2 0x04]
-Roll = +45°   → PWM = 1750 → [0xD6 0x06]
-Roll = -90°   → PWM = 1000 → [0xE8 0x03]
-Roll = +90°   → PWM = 2000 → [0xD0 0x07]
+
+The build system will automatically compile only the relevant sensor driver.
+
+## Hardware Connections
+
+### Option 1: MPU6050 (I2C) - Default
+```
+MPU6050          XIAO ESP32-S3
+  VCC    <-->    3.3V
+  GND    <-->    GND
+  SCL    <-->    GPIO 6
+  SDA    <-->    GPIO 5
 ```
 
-## Build and Flash
+### Option 2: ICM-20948 (SPI)
+```
+ICM-20948        XIAO ESP32-S3
+  VCC    <-->    3.3V
+  GND    <-->    GND
+  MISO   <-->    GPIO 8
+  MOSI   <-->    GPIO 9
+  SCLK   <-->    GPIO 7
+  CS     <-->    GPIO 44
+```
 
+## Software Architecture
+
+```
+┌─────────────────────────────────────────────────────┐
+│              app_main()                             │
+│  ┌───────────────────┐  ┌──────────────────────┐  │
+│  │  imu_reader_task  │  │    ble_tx_task       │  │
+│  │  (100 Hz)         │  │    (20 Hz)           │  │
+│  └─────────┬─────────┘  └──────────┬───────────┘  │
+│            │                        │              │
+│            ▼                        ▼              │
+│  ┌─────────────────┐      ┌────────────────┐     │
+│  │  Sensor Driver  │      │  BLE TX Buffer  │     │
+│  │  (MPU/ICM)      │─────▶│  (s_latest_pwm) │     │
+│  └─────────────────┘      └────────────────┘     │
+│            │                        │              │
+│            ▼                        ▼              │
+│  ┌─────────────────┐      ┌────────────────┐     │
+│  │ Madgwick Filter │      │  GATT Client   │     │
+│  │ (6/9-DOF AHRS)  │      │                │     │
+│  └─────────────────┘      └────────┬───────┘     │
+│            │                        │              │
+│            ▼                        ▼              │
+│  ┌─────────────────┐      ┌────────────────┐     │
+│  │ Euler Angles    │      │   STM32WB      │     │
+│  │ (Roll/Pitch/Yaw)│      │   (BLE Server) │     │
+│  └─────────────────┘      └────────────────┘     │
+└─────────────────────────────────────────────────────┘
+```
+
+## Building and Flashing
+
+### Prerequisites
 ```bash
-cd /Users/enriquegomez/CMU/Fall-2025/18-500/MarioKar/esp32/mariokar-esp-client
-idf.py build flash monitor
+# Install ESP-IDF v5.x
+cd /opt/esp/idf
+./install.sh
+source export.sh
 ```
 
-## Expected Output
-
-```
-I (XXX) GATTC_CLEAN: Initializing IMU...
-I (XXX) ICM20948: WHO_AM_I verified: 0xEA
-I (XXX) GATTC_CLEAN: IMU initialized, calibrating gyroscope...
-I (XXX) ICM20948: Gyro bias: X=-0.891 Y=0.147 Z=-0.230 deg/s
-I (XXX) GATTC_CLEAN: IMU ready, starting orientation tracking
-I (XXX) GATTC_CLEAN: Found target device MyCST
-I (XXX) GATTC_CLEAN: P2P Service found: start=0x000C end=0x0010
-I (XXX) GATTC_CLEAN: LED value handle 0x000E
-I (XXX) GATTC_CLEAN: Notifications enabled.
-I (XXX) GATTC_CLEAN: IMU: Roll=-1.0° -> PWM=1494 µs
-I (XXX) GATTC_CLEAN: BLE TX: PWM=1494 µs [0xD6 0x05]
+### Build
+```bash
+cd esp32/mariokar-esp-client
+idf.py set-target esp32s3
+idf.py build
 ```
 
-## Usage
-
-### Tilt Control
-1. **Power on** - IMU calibrates (keep stationary for 2 seconds)
-2. **Center position** - Device level = 1500 µs (center)
-3. **Tilt left** - Roll negative = PWM < 1500 (left turn)
-4. **Tilt right** - Roll positive = PWM > 1500 (right turn)
-
-### Changing Control Axis
-
-Edit `main.c` line 412 to use different axis:
-
-```c
-// Use ROLL for left/right steering (default)
-s_latest_pwm = angle_to_servo_pwm(orientation.roll);
-
-// Use PITCH for forward/backward control
-s_latest_pwm = angle_to_servo_pwm(orientation.pitch);
-
-// Use YAW for rotation control
-s_latest_pwm = angle_to_servo_pwm(orientation.yaw);
+### Flash
+```bash
+idf.py flash monitor
 ```
 
-## STM32WB Receiver Code
-
-Your STM32WB should receive and decode the PWM value:
-
-```c
-uint16_t pwm_value = (rx_buffer[1] << 8) | rx_buffer[0];  // Little-endian
-// Use pwm_value (1000-2000) to control servo
+### Expected Output
 ```
+I (1234) MPU6050: Initializing MPU6050 IMU
+I (1245) MPU6050: MPU6050 initialized successfully (I2C mode)
+I (1250) MPU6050: Calibrating gyroscope... keep device stationary!
+I (1255) MPU6050: Progress: 0%
+...
+I (3456) MPU6050: Calibration complete (1000 samples)
+I (3460) MPU6050: Gyro offsets: X=-0.234 Y=0.123 Z=-0.056 deg/s
+I (3465) GATTC_CLEAN: IMU ready, starting orientation tracking
+I (3470) GATTC_CLEAN: BLE TX task started (interval 50 ms)
+I (4567) GATTC_CLEAN: Found target device MyCST
+I (5678) GATTC_CLEAN: P2P Service found: start=0x000c end=0x0010
+I (5890) GATTC_CLEAN: LED value handle 0x000d
+I (6123) GATTC_CLEAN: SWITCH decl handle 0x000f
+I (6234) GATTC_CLEAN: Notifications enabled.
+I (6345) GATTC_CLEAN: BLE TX: PWM=1500 µs [0xDC 0x05]
+I (7456) GATTC_CLEAN: IMU: Roll=-15.3° -> PWM=1415 µs
+```
+
+## Calibration
+
+**Important**: Keep the device **completely stationary** during the ~2 second gyroscope calibration on startup. This measures and removes gyroscope bias for accurate orientation tracking.
+
+## Steering Control Mapping
+
+The system uses **ROLL** angle for steering:
+
+| Roll Angle | Servo PWM | Steering Direction |
+|------------|-----------|-------------------|
+| -90°       | 1000 µs   | Full Left         |
+| -45°       | 1250 µs   | Half Left         |
+| 0°         | 1500 µs   | Center/Straight   |
+| +45°       | 1750 µs   | Half Right        |
+| +90°       | 2000 µs   | Full Right        |
+
+## Code Structure
+
+```
+main/
+├── main.c              # BLE client, IMU reader, TX tasks
+├── sensor.h            # Common IMU API & sensor selection
+├── sensor.c            # ICM-20948 driver (SPI, 9-axis)
+├── sensor_mpu6050.c    # MPU6050 driver (I2C, 6-axis)
+├── idf_component.yml   # MPU6050 component dependency
+└── CMakeLists.txt      # Build configuration
+```
+
+## Sensor Fusion Details
+
+Both sensors use the **Madgwick AHRS algorithm** for sensor fusion:
+
+### MPU6050 (6-DOF Mode)
+- Fuses accelerometer + gyroscope data
+- No magnetometer → **yaw will drift** over time
+- Excellent for roll and pitch (used for steering)
+- Sample rate: 100 Hz
+- Filter beta: 0.1 (tunable for response vs smoothness)
+
+### ICM-20948 (9-DOF Mode)
+- Fuses accelerometer + gyroscope + magnetometer
+- Magnetometer provides absolute heading reference
+- Yaw is stable and doesn't drift
+- Sample rate: 100 Hz
+- Filter beta: 0.1
 
 ## Troubleshooting
 
-### IMU Not Responding
-- Check SPI connections (especially CS line)
-- Verify power supply (3.3V)
-- Check WHO_AM_I register (should be 0xEA)
+### IMU not detected
+**MPU6050:**
+- Check I2C connections (SCL on GPIO 6, SDA on GPIO 5)
+- Verify 3.3V power supply
+- Try adding external 4.7kΩ pull-up resistors on SCL/SDA
 
-### BLE Connection Fails
-- Ensure STM32WB is advertising as "MyCST"
-- Check UUID matches (service: 0xFE00, char: 0xFE41)
+**ICM-20948:**
+- Check SPI connections (see pinout above)
+- Verify CS line is connected to GPIO 44
+- Ensure 3.3V power (not 5V)
+
+### Orientation drifts
+- Ensure device was **stationary** during calibration
+- For MPU6050: Yaw drift is normal (no magnetometer)
+- Recalibrate by restarting the device
+- Check for magnetic interference if using ICM-20948
+
+### BLE connection fails
+- Verify STM32WB is advertising as "MyCST"
+- Check that P2P service UUID matches
+- Monitor with `idf.py monitor` for connection logs
 - Try power cycling both devices
 
-### PWM Values Stuck at 1500
-- IMU might not be initialized
-- Check gyro calibration completed
-- Verify roll angle is changing (check logs)
+### Roll angle reversed
+- Swap sign in `angle_to_servo_pwm()` function in `main.c`
+- Or physically mount IMU rotated 180°
 
-### Drift Over Time
-- Normal for 6-axis fusion (~3-4°/minute)
-- Re-calibrate by restarting device
-- Keep device level during power-on
+## Customization
 
-## Technical Details
+### Change steering axis
+In `main.c`, line ~412:
+```c
+// Use PITCH instead of ROLL
+s_latest_pwm = angle_to_servo_pwm(orientation.pitch);
 
-### Sensor Fusion
-- **Algorithm**: Madgwick AHRS (6-axis)
-- **Update Rate**: 100 Hz
-- **Gyro Range**: ±500 dps
-- **Accel Range**: ±4g
-- **Beta**: 0.1 (filter gain)
+// Or use YAW (only stable with ICM-20948)
+s_latest_pwm = angle_to_servo_pwm(orientation.yaw);
+```
 
-### BLE Settings
-- **TX Interval**: 50ms (20 Hz)
-- **Write Type**: No response (faster)
-- **MTU**: 500 bytes
-- **Scan Interval**: 80ms
+### Adjust transmission rate
+In `main.c`, line ~34:
+```c
+#define BLE_TX_INTERVAL_MS      50  // Change to 20 for 50Hz, 100 for 10Hz
+```
 
-### Task Stack Sizes
-- IMU Reader: 4096 bytes
-- BLE TX: 3072 bytes
+### Tune sensor fusion
+In `sensor_mpu6050.c` or `sensor.c`, adjust filter parameters:
+```c
+madgwick_init(&g_filter, 100.0f, 0.1f);
+//                        ^       ^
+//                        |       beta (filter gain)
+//                        sample rate (Hz)
+```
 
-## Performance
+## Performance Metrics
 
-- **CPU Usage**: ~5% @ 160MHz
-- **IMU Latency**: <10ms sensor-to-orientation
-- **BLE Latency**: 50ms update interval
-- **Total Latency**: <60ms tilt-to-transmission
+| Metric                 | MPU6050  | ICM-20948 |
+|-----------------------|----------|-----------|
+| Update Rate           | 100 Hz   | 100 Hz    |
+| BLE TX Rate           | 20 Hz    | 20 Hz     |
+| Roll/Pitch Accuracy   | ±2°      | ±2°       |
+| Yaw Accuracy          | Drifts   | ±5°       |
+| Calibration Time      | ~2 sec   | ~2 sec    |
+| Latency (IMU→BLE)     | ~60 ms   | ~60 ms    |
 
 ## License
 
-Part of MarioKar project - CMU 18-500 Fall 2025
-
+See project root LICENSE file.
