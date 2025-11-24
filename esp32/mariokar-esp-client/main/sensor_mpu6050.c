@@ -176,28 +176,6 @@ static void madgwick_get_euler(madgwick_t *filter, float *roll, float *pitch, fl
 esp_err_t mpu6050_imu_init(void) {
     ESP_LOGI(TAG, "Initializing MPU6050 IMU");
     
-    // Configure I2C
-    i2c_config_t conf = {
-        .mode = I2C_MODE_MASTER,
-        .sda_io_num = I2C_MASTER_SDA_IO,
-        .scl_io_num = I2C_MASTER_SCL_IO,
-        .sda_pullup_en = GPIO_PULLUP_ENABLE,
-        .scl_pullup_en = GPIO_PULLUP_ENABLE,
-        .master.clk_speed = I2C_MASTER_FREQ_HZ,
-    };
-    
-    esp_err_t ret = i2c_param_config(I2C_MASTER_NUM, &conf);
-    if (ret != ESP_OK) {
-        ESP_LOGE(TAG, "I2C config failed: %s", esp_err_to_name(ret));
-        return ret;
-    }
-    
-    ret = i2c_driver_install(I2C_MASTER_NUM, conf.mode, 0, 0, 0);
-    if (ret != ESP_OK) {
-        ESP_LOGE(TAG, "I2C driver install failed: %s", esp_err_to_name(ret));
-        return ret;
-    }
-    
     // Initialize MPU6050
     g_mpu6050 = mpu6050_create(I2C_MASTER_NUM, MPU6050_ADDR);
     if (g_mpu6050 == NULL) {
@@ -207,7 +185,7 @@ esp_err_t mpu6050_imu_init(void) {
     }
     
     // Configure: ±4g accel, ±500°/s gyro
-    ret = mpu6050_config(g_mpu6050, ACCE_FS_4G, GYRO_FS_500DPS);
+    esp_err_t ret = mpu6050_config(g_mpu6050, ACCE_FS_4G, GYRO_FS_500DPS);
     if (ret != ESP_OK) {
         ESP_LOGE(TAG, "MPU6050 config failed: %s", esp_err_to_name(ret));
         mpu6050_delete(g_mpu6050);

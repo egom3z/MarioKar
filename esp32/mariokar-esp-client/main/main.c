@@ -27,6 +27,13 @@
 #include "driver/usb_serial_jtag.h"
 #include "driver/gpio.h"
 #include "sensor.h"
+#include "drv2605l.h"
+#include "driver/i2c.h"
+
+#define I2C_MASTER_SCL_IO    GPIO_NUM_6    // Xiao ESP32S3 default SCL
+#define I2C_MASTER_SDA_IO    GPIO_NUM_5    // Xiao ESP32S3 default SDA
+#define I2C_MASTER_NUM       I2C_NUM_0
+#define I2C_MASTER_FREQ_HZ   400000
 
 // GPIO configuration for reverse button
 #define GPIO_REVERSE_BUTTON    GPIO_NUM_1
@@ -39,6 +46,8 @@
 
 // IMU → BLE TX settings
 #define BLE_TX_INTERVAL_MS      50
+
+static const char *TAG = "MAIN";
 
 // Target device name advertised by STM32WB
 static char remote_device_name[] = "MyCST";
@@ -369,6 +378,8 @@ typedef struct {
     uint16_t mpu_pitch;  // MPU-6050 pitch PWM (1000-2000 µs range)
 } dual_imu_pwm_t;
 
+static volatile uint8_t haptic_intensity;
+
 static volatile dual_imu_pwm_t s_latest_pwm = {1580, 1580, 1500, 1500}; // ICM center=1650 (0°), MPU center=1500
 static volatile bool s_icm_ready = false;
 static volatile bool s_mpu_ready = false;
@@ -503,6 +514,26 @@ static inline uint16_t angle_to_servo_pwm_full(float angle) {
 }
 
 /**
+ * @brief Map roll angle (-90° to +90°) to DRV2605L strength (0–255)
+ *        Larger roll angle = stronger haptic intensity
+ */
+static inline uint8_t roll_to_drv2605_intensity(float roll_deg)
+{
+    // Clamp input
+    if (roll_deg < -90.0f) roll_deg = -90.0f;
+    if (roll_deg > 90.0f)  roll_deg = 90.0f;
+
+    // Convert roll from [-90, +90] → [0, 1]
+    float normalized = (roll_deg + 90.0f) / 180.0f;
+
+    // Map to DRV2605 amplitude range [0, 255]
+    uint8_t intensity = (uint8_t)(normalized * 255.0f);
+
+    return intensity;
+}
+
+
+/**
  * @brief Map angle to servo PWM (ICM-20948, half span, mode-dependent)
  * - Normal: 0° -> 1610µs, 90° -> 1560µs (decreasing)
  * - Reverse: 0° -> 1200µs, 90° -> 1350µs (increasing)
@@ -579,6 +610,33 @@ static void icm20948_reader_task(void *arg) {
     }
 }
 
+static esp_err_t i2c_init() {
+    // Configure I2C
+    i2c_config_t conf = {
+        .mode = I2C_MODE_MASTER,
+        .sda_io_num = I2C_MASTER_SDA_IO,
+        .scl_io_num = I2C_MASTER_SCL_IO,
+        .sda_pullup_en = GPIO_PULLUP_ENABLE,
+        .scl_pullup_en = GPIO_PULLUP_ENABLE,
+        .master.clk_speed = I2C_MASTER_FREQ_HZ,
+    };
+    
+    esp_err_t ret = i2c_param_config(I2C_MASTER_NUM, &conf);
+    if (ret != ESP_OK) {
+        ESP_LOGE(TAG, "I2C config failed: %s", esp_err_to_name(ret));
+        return ret;
+    }
+    
+    ret = i2c_driver_install(I2C_MASTER_NUM, conf.mode, 0, 0, 0);
+    if (ret != ESP_OK) {
+        ESP_LOGE(TAG, "I2C driver install failed: %s", esp_err_to_name(ret));
+        return ret;
+    }
+
+    ESP_LOGI(TAG, "I2C driver initialization success: %s", esp_err_to_name(ret));    
+    return ESP_OK;
+}
+
 /* MPU-6050 reader task (I2C) */
 static void mpu6050_reader_task(void *arg) {
     imu_data_t sensor_data;
@@ -612,17 +670,57 @@ static void mpu6050_reader_task(void *arg) {
             
             s_latest_pwm.mpu_roll = angle_to_servo_pwm_full(orientation.roll);
             s_latest_pwm.mpu_pitch = angle_to_servo_pwm_full(orientation.pitch);
+            haptic_intensity = roll_to_drv2605_intensity(orientation.roll);
             
             static int log_counter = 0;
             if (++log_counter >= 100) {
-                // ESP_LOGI(GATTC_TAG, "MPU: Roll=%.1f° (PWM=%d) Pitch=%.1f° (PWM=%d)", 
-                //          orientation.roll, s_latest_pwm.mpu_roll,
-                //          orientation.pitch, s_latest_pwm.mpu_pitch);
+                ESP_LOGI(GATTC_TAG, "MPU: Roll=%.1f° (PWM=%d) Pitch=%.1f° (PWM=%d)", 
+                         orientation.roll, s_latest_pwm.mpu_roll,
+                         orientation.pitch, s_latest_pwm.mpu_pitch);
                 log_counter = 0;
             }
         }
         
         vTaskDelay(pdMS_TO_TICKS(10));  // 100 Hz
+    }
+}
+
+/* Haptic task (I2C) */
+static void haptic_task(void *arg) {
+
+    ESP_LOGI(GATTC_TAG, "Initializing DRV2605L Haptic (I2C)...");
+
+    if (!drv2605l_init(I2C_MASTER_SDA_IO, I2C_MASTER_SCL_IO)) {
+        ESP_LOGE(TAG, "Failed to initialize DRV2605L");
+        vTaskDelete(NULL);
+        return;
+    }
+    
+    ESP_LOGI(GATTC_TAG, "DRV2605L initialized");
+    // drv2605l_use_library(DRV2605_LIBRARY_TS2200A);
+    drv2605l_use_rtp();
+    drv2605l_set_realtime_value(50);
+    while (1) {
+        // Wait for both IMUs to be ready
+        if (!s_mpu_ready) {
+            vTaskDelay(pdMS_TO_TICKS(100));
+            continue;
+        }
+        
+        // Copy current PWM values (atomic read)
+        uint8_t haptic_data = haptic_intensity;
+        // haptic_data = 230;
+
+        // c += 1;
+        drv2605l_set_realtime_value(haptic_data);
+        
+        static int log_counter = 0;
+        if (++log_counter >= 100) {
+            ESP_LOGI(GATTC_TAG, "HAPTIC: Intensity=%d", haptic_data);
+            log_counter = 0;
+        }
+
+        vTaskDelay(pdMS_TO_TICKS(10));
     }
 }
 
@@ -699,9 +797,12 @@ void app_main(void) {
     // Initialize reverse button on GPIO1
     init_reverse_button();
 
+    i2c_init();
+
     // Start dual IMU reader tasks, BLE TX task, and reverse monitor
     xTaskCreate(icm20948_reader_task, "icm20948", 4096, NULL, 5, NULL);
     xTaskCreate(mpu6050_reader_task, "mpu6050", 4096, NULL, 5, NULL);
+    xTaskCreate(haptic_task, "haptic", 4096, NULL, 6, NULL);
     xTaskCreate(ble_tx_task, "ble_tx", 3072, NULL, 6, NULL);
     xTaskCreate(reverse_monitor_task, "reverse_mon", 4096, NULL, 4, NULL);
 

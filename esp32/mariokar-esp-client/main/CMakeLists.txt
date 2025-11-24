@@ -1,5 +1,5 @@
 idf_component_register(
-    SRCS "main.c" "sensor.c" "sensor_mpu6050.c"
+    SRCS "main.c" "sensor.c" "sensor_mpu6050.c" "drv2605l.c"
     INCLUDE_DIRS "."
-    PRIV_REQUIRES nvs_flash bt esp_driver_usb_serial_jtag driver
+    PRIV_REQUIRES nvs_flash bt esp_driver_usb_serial_jtag driver esp_driver_spi
 )
