@@ -45,31 +45,10 @@ static esp_err_t drv2605l_read_register(uint8_t reg, uint8_t *value)
 // Initialize the DRV2605L
 bool drv2605l_init(uint8_t sda_pin, uint8_t scl_pin)
 {
-    // Configure I2C
-    i2c_config_t conf = {
-        .mode = I2C_MODE_MASTER,
-        .sda_io_num = sda_pin,
-        .scl_io_num = scl_pin,
-        .sda_pullup_en = GPIO_PULLUP_ENABLE,
-        .scl_pullup_en = GPIO_PULLUP_ENABLE,
-        .master.clk_speed = 400000, // 400kHz
-    };
-    
-    esp_err_t ret = i2c_param_config(i2c_port, &conf);
-    if (ret != ESP_OK) {
-        ESP_LOGE(TAG, "I2C config failed");
-        return false;
-    }
-    
-    ret = i2c_driver_install(i2c_port, conf.mode, 0, 0, 0);
-    if (ret != ESP_OK) {
-        ESP_LOGE(TAG, "I2C driver install failed");
-        return false;
-    }
     
     // Check if device is present
     uint8_t status;
-    ret = drv2605l_read_register(DRV2605_REG_STATUS, &status);
+    esp_err_t ret = drv2605l_read_register(DRV2605_REG_STATUS, &status);
     if (ret != ESP_OK) {
         ESP_LOGE(TAG, "DRV2605L not found");
         return false;
@@ -177,3 +156,43 @@ void drv2605l_standby(void)
 {
     drv2605l_write_register(DRV2605_REG_MODE, 0x40);
 }
+
+// void drv_task(void)
+// {   
+//     ESP_LOGI(TAG, "MPU task started");
+//     esp_err_t ret;
+    
+//     while (1) {
+//         // Read sensor values
+//         ret = mpu6050_get_acce(mpu6050, &acce);
+//         if (ret != ESP_OK) {
+//             ESP_LOGE(TAG, "Failed to read accelerometer");
+//             vTaskDelay(pdMS_TO_TICKS(100));
+//             continue;
+//         }
+        
+//         ret = mpu6050_get_gyro(mpu6050, &gyro);
+//         if (ret != ESP_OK) {
+//             ESP_LOGE(TAG, "Failed to read gyroscope");
+//             vTaskDelay(pdMS_TO_TICKS(100));
+//             continue;
+//         }
+        
+//         // Update Madgwick filter
+//         madgwick_update(&filter, 
+//                        gyro.gyro_x, gyro.gyro_y, gyro.gyro_z,
+//                        acce.acce_x, acce.acce_y, acce.acce_z);
+        
+//         // Get Euler angles
+//         madgwick_get_euler(&filter, &roll, &pitch, &yaw);
+        
+//         // Display orientation
+//         ESP_LOGI(TAG, "Roll: %6.2f°  Pitch: %6.2f°  Yaw: %6.2f°", roll, pitch, yaw);
+        
+//         vTaskDelay(pdMS_TO_TICKS(100));  // 10Hz update rate
+//     }
+    
+//     // Cleanup (never reached in this example)
+//     mpu6050_delete(mpu6050);
+//     i2c_driver_delete(I2C_MASTER_NUM);
+// }

@@ -27,9 +27,9 @@ static const char *TAG = "ICM20948";
 
 // GPIO pin assignments for XIAO ESP32S3
 #define PIN_MISO        GPIO_NUM_8
-#define PIN_MOSI        GPIO_NUM_9
+#define PIN_MOSI        GPIO_NUM_3
 #define PIN_SCLK        GPIO_NUM_7
-#define PIN_CS          GPIO_NUM_44
+#define PIN_CS          GPIO_NUM_38
 
 #define SPI_CLOCK_HZ    4000000  // 4 MHz SPI clock
 

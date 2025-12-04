@@ -31,9 +31,9 @@ static const char *TAG = "ICM20948";
 
 // GPIO pin assignments for XIAO ESP32S3
 #define PIN_MISO        GPIO_NUM_8
-#define PIN_MOSI        GPIO_NUM_9
+#define PIN_MOSI        GPIO_NUM_3
 #define PIN_SCLK        GPIO_NUM_7
-#define PIN_CS          GPIO_NUM_44
+#define PIN_CS          GPIO_NUM_38
 
 #define SPI_CLOCK_HZ    4000000  // 4 MHz SPI clock
 
@@ -392,6 +392,84 @@ static void madgwick_update_imu(float gx, float gy, float gz,
 // =============================================================================
 // Public API Implementation
 // =============================================================================
+
+esp_err_t second_init(void) {
+    // Check WHO_AM_I
+    uint8_t who_am_i;
+    esp_err_t ret = read_register(REG_WHO_AM_I, &who_am_i);
+    if (ret != ESP_OK || who_am_i != ICM20948_WHO_AM_I_VAL) {
+        ESP_LOGE(TAG, "WHO_AM_I check failed: expected 0x%02X, got 0x%02X",
+                 ICM20948_WHO_AM_I_VAL, who_am_i);
+        return ESP_FAIL;
+    }
+    ESP_LOGI(TAG, "WHO_AM_I verified: 0x%02X", who_am_i);
+
+    // Reset device
+    write_register(REG_PWR_MGMT_1, 0x80);
+    vTaskDelay(pdMS_TO_TICKS(100));
+
+    // Disable I2C slave again after reset
+    write_register(REG_USER_CTRL, BIT_I2C_IF_DIS);
+    vTaskDelay(pdMS_TO_TICKS(10));
+
+    // Wake up and select auto clock source
+    write_register(REG_PWR_MGMT_1, 0x01);
+    vTaskDelay(pdMS_TO_TICKS(10));
+
+    // Enable accelerometer and gyroscope
+    write_register(REG_PWR_MGMT_2, 0x00);
+    vTaskDelay(pdMS_TO_TICKS(10));
+
+    // Configure gyroscope (Bank 2)
+    select_bank(BANK_2);
+    write_register(REG_GYRO_SMPLRT_DIV, 0x00);
+    write_register(REG_GYRO_CONFIG_1, 0x0B);  // ±500dps, DLPF enabled
+    write_register(REG_GYRO_CONFIG_2, 0x00);
+
+    // Configure accelerometer (Bank 2)
+    write_register(REG_ACCEL_SMPLRT_DIV_1, 0x00);
+    write_register(REG_ACCEL_SMPLRT_DIV_2, 0x00);
+    write_register(REG_ACCEL_CONFIG, 0x13);    // ±4g, DLPF enabled
+    write_register(REG_ACCEL_CONFIG_2, 0x00);
+
+    // Enable I2C master mode (Bank 0)
+    select_bank(BANK_0);
+    write_register(REG_USER_CTRL, BIT_I2C_MST_EN | BIT_I2C_IF_DIS);
+    vTaskDelay(pdMS_TO_TICKS(10));
+
+    // Configure I2C master clock (Bank 3)
+    // Bits 3:0 = I2C master clock divider
+    // 0x07 = 345.6 kHz (recommended for AK09916)
+    select_bank(BANK_3);
+    write_register(REG_I2C_MST_CTRL, 0x07);
+    vTaskDelay(pdMS_TO_TICKS(10));
+
+    // Check magnetometer WHO_AM_I
+    uint8_t mag_id;
+    mag_read(AK09916_WIA2, &mag_id);
+    if (mag_id == AK09916_WIA2_VAL) {
+        ESP_LOGI(TAG, "Magnetometer detected: 0x%02X", mag_id);
+    } else {
+        ESP_LOGW(TAG, "Magnetometer not detected (got 0x%02X)", mag_id);
+    }
+
+    // Reset magnetometer
+    mag_write(AK09916_CNTL3, 0x01);
+    vTaskDelay(pdMS_TO_TICKS(100));
+
+    // Set continuous measurement mode
+    mag_write(AK09916_CNTL2, AK09916_MODE_CONT_100HZ);
+    vTaskDelay(pdMS_TO_TICKS(10));
+
+    // Setup continuous magnetometer reading
+    mag_setup_continuous_read();
+
+    select_bank(BANK_0);
+    vTaskDelay(pdMS_TO_TICKS(100));
+
+    ESP_LOGI(TAG, "ICM-20948 initialization complete");
+    return ESP_OK;
+}
 
 esp_err_t icm20948_init(void)
 {

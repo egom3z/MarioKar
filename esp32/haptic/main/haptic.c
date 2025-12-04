@@ -24,10 +24,10 @@ void app_main(void)
     drv2605l_use_library(DRV2605_LIBRARY_TS2200A);
     
     while (1) {
-        for (int i = 1; i < 100; i ++) {
-            drv2605l_play_effect(i);
-            vTaskDelay(pdMS_TO_TICKS(500));
-        }
+        // for (int i = 1; i < 100; i ++) {
+        //     drv2605l_play_effect(i);
+        //     vTaskDelay(pdMS_TO_TICKS(500));
+        // }
         // // Example 1: Play a strong click
         // ESP_LOGI(TAG, "Strong Click");
         // drv2605l_play_effect(1);
@@ -71,6 +71,7 @@ void app_main(void)
         
         // Switch back to library mode
         // drv2605l_use_library(DRV2605_LIBRARY_TS2200A);
+        drv2605l_play_effect(47);
         
         vTaskDelay(pdMS_TO_TICKS(2000));
     }

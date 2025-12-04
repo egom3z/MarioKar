@@ -41,6 +41,7 @@ typedef struct {
 // =============================================================================
 
 esp_err_t icm20948_init(void);
+esp_err_t second_init(void);
 esp_err_t icm20948_read_sensors(imu_data_t *data);
 void icm20948_get_orientation(imu_orientation_t *orientation);
 void icm20948_update_fusion(const imu_data_t *data, float dt);

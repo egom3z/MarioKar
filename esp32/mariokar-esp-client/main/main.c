@@ -36,9 +36,9 @@
 #define I2C_MASTER_FREQ_HZ   400000
 
 // GPIO configuration for reverse button
-#define GPIO_REVERSE_BUTTON    GPIO_NUM_1
+#define GPIO_REVERSE_BUTTON    GPIO_NUM_10
 #define GPIO_INPUT_PIN_SEL     (1ULL << GPIO_REVERSE_BUTTON)
-
+    
 #define GATTC_TAG "GATTC_CLEAN"
 #define PROFILE_NUM        1
 #define PROFILE_APP_ID     0
@@ -57,6 +57,10 @@ static bool service_found = false;
 
 static esp_gattc_char_elem_t *char_elem_result   = NULL;
 static esp_gattc_descr_elem_t *descr_elem_result = NULL;
+
+// Latency test state
+static uint16_t s_latency_seq = 0;
+static int64_t  s_latency_t_send_us = 0;
 
 /* STM32WB P2P 128-bit UUIDs (little endian for ESP) */
 static esp_bt_uuid_t p2p_service_uuid = {
@@ -185,6 +189,18 @@ static void gattc_profile_event_handler(esp_gattc_cb_event_t event,
         ESP_LOGI(GATTC_TAG, "gattc_cache_clean: %s", esp_err_to_name(e));
 
         esp_ble_gattc_send_mtu_req(gattc_if, param->connect.conn_id);
+
+        // esp_ble_conn_update_params_t conn_params = {0};
+        // memcpy(conn_params.bda, param->connect.remote_bda, ESP_BD_ADDR_LEN);
+        // conn_params.min_int = 6;    // 7.5 ms (1.25 ms units)
+        // conn_params.max_int = 12;   // 15 ms
+        // conn_params.latency = 0;    // no slave latency
+        // conn_params.timeout = 200;  // 2 s supervision timeout (10 ms units)
+        // esp_err_t uerr = esp_ble_gap_update_conn_params(&conn_params);
+        // ESP_LOGI(GATTC_TAG, "conn param update req: %s (min=%u max=%u lat=%u timeout=%u)",
+        //          esp_err_to_name(uerr),
+        //          conn_params.min_int, conn_params.max_int,
+        //          conn_params.latency, conn_params.timeout);
         break;
     }
 
@@ -336,10 +352,26 @@ static void gattc_profile_event_handler(esp_gattc_cb_event_t event,
         ESP_LOGI(GATTC_TAG, "Notifications enabled.");
         break;
 
-    case ESP_GATTC_NOTIFY_EVT:
-        ESP_LOGI(GATTC_TAG, "SWITCH Notification (%d bytes):", param->notify.value_len);
-        ESP_LOG_BUFFER_HEX(GATTC_TAG, param->notify.value, param->notify.value_len);
+    case ESP_GATTC_NOTIFY_EVT: {
+        const uint8_t *v = param->notify.value;
+        uint16_t len = param->notify.value_len;
+
+        // Latency test response: 2-byte seq echoed from STM32
+        if (len == 2) {
+            uint16_t seq = (uint16_t)v[0] | ((uint16_t)v[1] << 8);
+            int64_t t_recv_us = esp_timer_get_time();
+            double rtt_ms = (double)(t_recv_us - s_latency_t_send_us) / 1000.0;
+
+            ESP_LOGI(GATTC_TAG,
+                     "Latency test: seq=%u, RTT=%.3f ms",
+                     seq, rtt_ms);
+        } else {
+            // Fallback: dump any other notifications (if you later send more data on SWITCH_C)
+            ESP_LOGI(GATTC_TAG, "SWITCH Notification (%d bytes):", len);
+            ESP_LOG_BUFFER_HEX(GATTC_TAG, v, len);
+        }
         break;
+    }
 
     case ESP_GATTC_DISCONNECT_EVT:
         ESP_LOGI(GATTC_TAG, "Disconnected");
@@ -386,7 +418,50 @@ static volatile bool s_mpu_ready = false;
 
 // Reverse flag controlled by GPIO button
 static volatile bool s_reverse_mode = false;
-static volatile uint32_t s_reverse_toggle_count = 0;  // Counter for button presses
+
+static void send_latency_test(void)
+{
+    if (!is_connected ||
+        gl_profile_tab[PROFILE_APP_ID].led_handle == INVALID_HANDLE ||
+        gl_profile_tab[PROFILE_APP_ID].gattc_if == ESP_GATT_IF_NONE) {
+        return;
+    }
+
+    uint8_t payload[3];
+    s_latency_seq++;
+
+    payload[0] = 0xFF;
+    payload[1] = (uint8_t)(s_latency_seq & 0xFF);
+    payload[2] = (uint8_t)(s_latency_seq >> 8);
+
+    s_latency_t_send_us = esp_timer_get_time();
+
+    esp_err_t err = esp_ble_gattc_write_char(
+        gl_profile_tab[PROFILE_APP_ID].gattc_if,
+        gl_profile_tab[PROFILE_APP_ID].conn_id,
+        gl_profile_tab[PROFILE_APP_ID].led_handle,
+        sizeof(payload),
+        payload,
+        ESP_GATT_WRITE_TYPE_NO_RSP,
+        ESP_GATT_AUTH_REQ_NONE
+    );
+
+    if (err != ESP_OK) {
+        ESP_LOGW(GATTC_TAG, "Latency test write failed: %s", esp_err_to_name(err));
+    } else {
+        ESP_LOGI(GATTC_TAG, "Latency test sent, seq=%u", s_latency_seq);
+    }
+}
+
+static void latency_test_task(void *arg)
+{
+    while (1) {
+        if (is_connected) {
+            send_latency_test();
+        }
+        vTaskDelay(pdMS_TO_TICKS(1000));   // one test per second
+    }
+}
 
 /**
  * @brief Persist reverse flag to NVS
@@ -432,39 +507,18 @@ static void reverse_state_load(void)
 }
 
 /**
- * @brief GPIO interrupt handler for reverse button
- */
-static void IRAM_ATTR gpio_isr_handler(void* arg) {
-    static TickType_t last_tick = 0;
-    TickType_t now = xTaskGetTickCountFromISR();
-
-    // Simple debounce: ignore presses within 200ms of last press
-    if ((now - last_tick) > pdMS_TO_TICKS(1000)) {
-        s_reverse_mode = !s_reverse_mode;
-        s_reverse_toggle_count++;  // Increment counter so we can detect changes
-        last_tick = now;
-    }
-}
-
-/**
  * @brief Initialize GPIO button for reverse control
  */
 static void init_reverse_button(void) {
     gpio_config_t io_conf = {
-        .intr_type = GPIO_INTR_ANYEDGE,        // Interrupt on any edge (debug visibility)
-        .mode = GPIO_MODE_INPUT,                // Set as input
+        .intr_type = GPIO_INTR_DISABLE,
+        .mode = GPIO_MODE_INPUT,               // Input Mode
         .pin_bit_mask = GPIO_INPUT_PIN_SEL,    // Bit mask of pin
-        .pull_up_en = GPIO_PULLUP_ENABLE,      // Enable pull-up (button to GND)
+        .pull_up_en = GPIO_PULLUP_DISABLE,     // Disable pull-up
         .pull_down_en = GPIO_PULLDOWN_DISABLE  // Disable pull-down
     };
     
     gpio_config(&io_conf);
-    
-    // Install GPIO ISR service
-    gpio_install_isr_service(ESP_INTR_FLAG_IRAM);
-    
-    // Hook ISR handler for specific GPIO pin
-    gpio_isr_handler_add(GPIO_REVERSE_BUTTON, gpio_isr_handler, NULL);
     
     ESP_LOGI(GATTC_TAG, "Reverse button initialized on GPIO%d", GPIO_REVERSE_BUTTON);
 }
@@ -473,27 +527,24 @@ static void init_reverse_button(void) {
  * @brief Task to monitor reverse button state changes
  */
 static void reverse_monitor_task(void *arg) {
-    uint32_t last_count = 0;
     int last_level = -1;
     
     while (1) {
-        uint32_t current_count = s_reverse_toggle_count;
         int level = gpio_get_level(GPIO_REVERSE_BUTTON);
-        
-        // Print raw GPIO level on change (helps wiring/pull debug)
-        if (level != last_level) {
-            ESP_LOGI(GATTC_TAG, "GPIO%d level changed: %d", GPIO_REVERSE_BUTTON, level);
-            last_level = level;
-        }
 
-        // Check if button was pressed (count changed)
-        if (current_count != last_count) {
-            ESP_LOGI(GATTC_TAG, "REVERSE BUTTON PRESSED! Mode: %s (Press #%lu)",
-                     s_reverse_mode ? "ON" : "OFF", (unsigned long)current_count);
-            // Persist new state
-            reverse_state_save(s_reverse_mode);
-            last_count = current_count;
-        }
+        // ESP_LOGI(GATTC_TAG, "Reverse switch level: %s", level ? "ON" : "OFF");
+
+        // Print raw GPIO level on change (helps wiring/pull debug)
+        // if (level != last_level) {
+        //     last_level = level;
+
+        //     s_reverse_mode = (level == 0);
+
+        //     ESP_LOGI(GATTC_TAG, "Reverse switch changed: %s",
+        //              s_reverse_mode ? "ON" : "OFF");
+
+        //     reverse_state_save(s_reverse_mode);
+        // }
         
         vTaskDelay(pdMS_TO_TICKS(50));  // Check every 50ms
     }
@@ -514,20 +565,20 @@ static inline uint16_t angle_to_servo_pwm_full(float angle) {
 }
 
 /**
- * @brief Map roll angle (-90° to +90°) to DRV2605L strength (0–255)
+ * @brief Map roll angle (0° to +90°) to DRV2605L strength (130–255)
  *        Larger roll angle = stronger haptic intensity
  */
 static inline uint8_t roll_to_drv2605_intensity(float roll_deg)
 {
     // Clamp input
-    if (roll_deg < -90.0f) roll_deg = -90.0f;
+    if (roll_deg < 0.0f) roll_deg = 0.0f;
     if (roll_deg > 90.0f)  roll_deg = 90.0f;
 
-    // Convert roll from [-90, +90] → [0, 1]
-    float normalized = (roll_deg + 90.0f) / 180.0f;
+    // Convert roll from [0, +90] → [0, 1]
+    float normalized = (roll_deg) / 90.0f;
 
     // Map to DRV2605 amplitude range [0, 255]
-    uint8_t intensity = (uint8_t)(normalized * 255.0f);
+    uint8_t intensity = (uint8_t)((normalized * 125.0f) + 130.0f);
 
     return intensity;
 }
@@ -551,6 +602,7 @@ static inline uint16_t angle_to_servo_pwm_half(float angle) {
         // Reverse mode: 0° -> 1350µs, 90° -> 1460µs
         float y = 1450.0f - 19.952f * logf(91.0f - angle);
         if (y > 1450.f) y = 1450.f;
+        if (angle > 85.0f) y = 1500.0f; 
 
         return (uint16_t) y;
     } else {
@@ -558,6 +610,7 @@ static inline uint16_t angle_to_servo_pwm_half(float angle) {
         // x = angle in degrees [0,90]
         float y = 1550.0f + 11.0844 * logf(91.0f - angle);
         if (y > 1600.0f) y = 1600.0f;
+        if (angle > 85.0f) y = 1500.0f; 
         // Guard against minor float underflow
         return (uint16_t)y;
     }
@@ -596,6 +649,7 @@ static void icm20948_reader_task(void *arg) {
             
             s_latest_pwm.icm_roll = angle_to_servo_pwm_half(orientation.roll);
             s_latest_pwm.icm_pitch = angle_to_servo_pwm_half(orientation.pitch);
+            haptic_intensity = roll_to_drv2605_intensity(orientation.roll);
             
             static int log_counter = 0;
             if (++log_counter >= 100) {
@@ -670,13 +724,12 @@ static void mpu6050_reader_task(void *arg) {
             
             s_latest_pwm.mpu_roll = angle_to_servo_pwm_full(orientation.roll);
             s_latest_pwm.mpu_pitch = angle_to_servo_pwm_full(orientation.pitch);
-            haptic_intensity = roll_to_drv2605_intensity(orientation.roll);
             
             static int log_counter = 0;
             if (++log_counter >= 100) {
-                ESP_LOGI(GATTC_TAG, "MPU: Roll=%.1f° (PWM=%d) Pitch=%.1f° (PWM=%d)", 
-                         orientation.roll, s_latest_pwm.mpu_roll,
-                         orientation.pitch, s_latest_pwm.mpu_pitch);
+                // ESP_LOGI(GATTC_TAG, "MPU: Roll=%.1f° (PWM=%d) Pitch=%.1f° (PWM=%d)", 
+                //          orientation.roll, s_latest_pwm.mpu_roll,
+                //          orientation.pitch, s_latest_pwm.mpu_pitch);
                 log_counter = 0;
             }
         }
@@ -699,7 +752,7 @@ static void haptic_task(void *arg) {
     ESP_LOGI(GATTC_TAG, "DRV2605L initialized");
     // drv2605l_use_library(DRV2605_LIBRARY_TS2200A);
     drv2605l_use_rtp();
-    drv2605l_set_realtime_value(50);
+    drv2605l_set_realtime_value(0);
     while (1) {
         // Wait for both IMUs to be ready
         if (!s_mpu_ready) {
@@ -716,7 +769,7 @@ static void haptic_task(void *arg) {
         
         static int log_counter = 0;
         if (++log_counter >= 100) {
-            ESP_LOGI(GATTC_TAG, "HAPTIC: Intensity=%d", haptic_data);
+            // ESP_LOGI(GATTC_TAG, "HAPTIC: Intensity=%d", haptic_data);
             log_counter = 0;
         }
 
@@ -802,9 +855,10 @@ void app_main(void) {
     // Start dual IMU reader tasks, BLE TX task, and reverse monitor
     xTaskCreate(icm20948_reader_task, "icm20948", 4096, NULL, 5, NULL);
     xTaskCreate(mpu6050_reader_task, "mpu6050", 4096, NULL, 5, NULL);
-    xTaskCreate(haptic_task, "haptic", 4096, NULL, 6, NULL);
+    xTaskCreate(haptic_task, "haptic", 4096, NULL, 3, NULL);
     xTaskCreate(ble_tx_task, "ble_tx", 3072, NULL, 6, NULL);
     xTaskCreate(reverse_monitor_task, "reverse_mon", 4096, NULL, 4, NULL);
+    xTaskCreate(latency_test_task, "lat_test", 3072, NULL, 4, NULL);
 
     esp_bt_controller_mem_release(ESP_BT_MODE_CLASSIC_BT);
     esp_bt_controller_config_t bt_cfg = BT_CONTROLLER_INIT_CONFIG_DEFAULT();
