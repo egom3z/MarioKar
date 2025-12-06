@@ -12,7 +12,7 @@ dependencies:
   idf:
     source:
       type: idf
-    version: 6.1.0
+    version: 6.0.0
 direct_dependencies:
 - espressif/mpu6050
 manifest_hash: 934c35034de52991fa809729eb446a27010796d9d6df0d1617a478ed5e50104d

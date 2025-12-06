@@ -38,6 +38,10 @@
 // GPIO configuration for reverse button
 #define GPIO_REVERSE_BUTTON    GPIO_NUM_10
 #define GPIO_INPUT_PIN_SEL     (1ULL << GPIO_REVERSE_BUTTON)
+
+// GPIO configuration for CAL diode
+#define GPIO_CAL_DIODE     GPIO_NUM_40
+#define GPIO_INPUT_CAL_SEL (1ULL << GPIO_NUM_40)
     
 #define GATTC_TAG "GATTC_CLEAN"
 #define PROFILE_NUM        1
@@ -190,17 +194,19 @@ static void gattc_profile_event_handler(esp_gattc_cb_event_t event,
 
         esp_ble_gattc_send_mtu_req(gattc_if, param->connect.conn_id);
 
-        // esp_ble_conn_update_params_t conn_params = {0};
-        // memcpy(conn_params.bda, param->connect.remote_bda, ESP_BD_ADDR_LEN);
-        // conn_params.min_int = 6;    // 7.5 ms (1.25 ms units)
-        // conn_params.max_int = 12;   // 15 ms
-        // conn_params.latency = 0;    // no slave latency
-        // conn_params.timeout = 200;  // 2 s supervision timeout (10 ms units)
-        // esp_err_t uerr = esp_ble_gap_update_conn_params(&conn_params);
-        // ESP_LOGI(GATTC_TAG, "conn param update req: %s (min=%u max=%u lat=%u timeout=%u)",
-        //          esp_err_to_name(uerr),
-        //          conn_params.min_int, conn_params.max_int,
-        //          conn_params.latency, conn_params.timeout);
+        // Request specific supervision timeout (6000 ms) while keeping a reasonable interval
+        // Note: units are 1.25 ms for interval and 10 ms for timeout
+        esp_ble_conn_update_params_t conn_params = {0};
+        memcpy(conn_params.bda, param->connect.remote_bda, ESP_BD_ADDR_LEN);
+        conn_params.min_int = 20;    // 25 ms
+        conn_params.max_int = 20;    // 25 ms
+        conn_params.latency = 0;     // no slave latency
+        conn_params.timeout = 100;   // 1000 ms supervision timeout
+        esp_err_t uerr = esp_ble_gap_update_conn_params(&conn_params);
+        ESP_LOGI(GATTC_TAG, "conn param update req: %s (min=%u max=%u lat=%u timeout=%u)",
+                 esp_err_to_name(uerr),
+                 conn_params.min_int, conn_params.max_int,
+                 conn_params.latency, conn_params.timeout);
         break;
     }
 
@@ -379,6 +385,18 @@ static void gattc_profile_event_handler(esp_gattc_cb_event_t event,
         service_found = false;
         gl_profile_tab[PROFILE_APP_ID].led_handle = INVALID_HANDLE;
         gl_profile_tab[PROFILE_APP_ID].switch_handle = INVALID_HANDLE;
+
+        // Automatically restart scanning so we can reconnect to the STM32
+        // 0 = scan indefinitely until we find "MyCST" again
+        {
+            esp_err_t err = esp_ble_gap_start_scanning(0);
+            if (err != ESP_OK) {
+                ESP_LOGE(GATTC_TAG, "Failed to restart scanning after disconnect: %s",
+                         esp_err_to_name(err));
+            } else {
+                ESP_LOGI(GATTC_TAG, "Restarted BLE scan after disconnect");
+            }
+        }
         break;
 
     case ESP_GATTC_CFG_MTU_EVT:
@@ -523,6 +541,20 @@ static void init_reverse_button(void) {
     ESP_LOGI(GATTC_TAG, "Reverse button initialized on GPIO%d", GPIO_REVERSE_BUTTON);
 }
 
+static void init_CAL(void) {
+    gpio_config_t io_conf = {
+        .intr_type = GPIO_INTR_DISABLE,
+        .mode = GPIO_MODE_OUTPUT,
+        .pin_bit_mask = GPIO_INPUT_CAL_SEL,
+        .pull_up_en = GPIO_PULLUP_DISABLE,
+        .pull_down_en = GPIO_PULLDOWN_DISABLE
+    };
+
+    gpio_config(&io_conf);
+
+    ESP_LOGI(GATTC_TAG, "CAL diode initialized on GPIO%d", GPIO_CAL_DIODE);
+}
+
 /**
  * @brief Task to monitor reverse button state changes
  */
@@ -559,7 +591,7 @@ static inline uint16_t angle_to_servo_pwm_full(float angle) {
     if (angle > 90.0f) angle = 90.0f;
     
     // Map: -90° -> 1000µs, 0° -> 1500µs, +90° -> 2000µs
-    uint16_t pwm = (uint16_t)(1500.0f + (angle * 1000.0f / 180.0f));
+    uint16_t pwm = (uint16_t)(1500.0f + (angle * 750.0f / 180.0f));
     
     return pwm;
 }
@@ -727,9 +759,9 @@ static void mpu6050_reader_task(void *arg) {
             
             static int log_counter = 0;
             if (++log_counter >= 100) {
-                // ESP_LOGI(GATTC_TAG, "MPU: Roll=%.1f° (PWM=%d) Pitch=%.1f° (PWM=%d)", 
-                //          orientation.roll, s_latest_pwm.mpu_roll,
-                //          orientation.pitch, s_latest_pwm.mpu_pitch);
+                ESP_LOGI(GATTC_TAG, "MPU: Roll=%.1f° (PWM=%d) Pitch=%.1f° (PWM=%d)", 
+                         orientation.roll, s_latest_pwm.mpu_roll,
+                         orientation.pitch, s_latest_pwm.mpu_pitch);
                 log_counter = 0;
             }
         }
@@ -752,7 +784,7 @@ static void haptic_task(void *arg) {
     ESP_LOGI(GATTC_TAG, "DRV2605L initialized");
     // drv2605l_use_library(DRV2605_LIBRARY_TS2200A);
     drv2605l_use_rtp();
-    drv2605l_set_realtime_value(0);
+    drv2605l_set_realtime_value(255);   // baseline intensity when idle / disconnected
     while (1) {
         // Wait for both IMUs to be ready
         if (!s_mpu_ready) {
@@ -760,8 +792,11 @@ static void haptic_task(void *arg) {
             continue;
         }
         
-        // Copy current PWM values (atomic read)
+        // Copy current intensity; if BLE is disconnected, force baseline (no-vibration) level
         uint8_t haptic_data = haptic_intensity;
+        if (!is_connected) {
+            haptic_data = 255;
+        }
         // haptic_data = 230;
 
         // c += 1;
@@ -807,7 +842,7 @@ static void ble_tx_task(void *arg) {
             pwm_bytes[5] = (uint8_t)((pwm_data.mpu_roll >> 8) & 0xFF);
             pwm_bytes[6] = (uint8_t)(pwm_data.mpu_pitch & 0xFF);
             pwm_bytes[7] = (uint8_t)((pwm_data.mpu_pitch >> 8) & 0xFF);
-            
+
             esp_err_t err = esp_ble_gattc_write_char(
                 gl_profile_tab[PROFILE_APP_ID].gattc_if,
                 gl_profile_tab[PROFILE_APP_ID].conn_id,
@@ -838,6 +873,7 @@ static void ble_tx_task(void *arg) {
 
 /* Main entry */
 void app_main(void) {
+
     esp_err_t ret = nvs_flash_init();
     if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
         nvs_flash_erase();
@@ -850,6 +886,10 @@ void app_main(void) {
     // Initialize reverse button on GPIO1
     init_reverse_button();
 
+    // init_CAL();
+
+    // gpio_set_level(GPIO_CAL_DIODE, 1);
+
     i2c_init();
 
     // Start dual IMU reader tasks, BLE TX task, and reverse monitor
@@ -858,7 +898,7 @@ void app_main(void) {
     xTaskCreate(haptic_task, "haptic", 4096, NULL, 3, NULL);
     xTaskCreate(ble_tx_task, "ble_tx", 3072, NULL, 6, NULL);
     xTaskCreate(reverse_monitor_task, "reverse_mon", 4096, NULL, 4, NULL);
-    xTaskCreate(latency_test_task, "lat_test", 3072, NULL, 4, NULL);
+    // xTaskCreate(latency_test_task, "lat_test", 3072, NULL, 4, NULL);
 
     esp_bt_controller_mem_release(ESP_BT_MODE_CLASSIC_BT);
     esp_bt_controller_config_t bt_cfg = BT_CONTROLLER_INIT_CONFIG_DEFAULT();
